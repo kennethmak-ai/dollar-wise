@@ -58,10 +58,12 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
 .header h1 { font-family:'Space Mono',monospace; font-size:15px; color:var(--accent); letter-spacing:1px; }
 .header .sub { font-size:11px; color:var(--muted); margin-top:1px; }
 .theme-toggle { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:5px 11px; font-size:11px; color:var(--muted); cursor:pointer; white-space:nowrap; flex-shrink:0; font-family:'DM Sans',sans-serif; }
-.bottom-nav { height:var(--nav-h); background:var(--surface); border-top:1px solid var(--border); display:flex; flex-shrink:0; position:relative; z-index:100; overflow-x:auto; }
-.nav-btn { flex:1; min-width:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:9px; color:var(--muted); cursor:pointer; transition:color 0.2s; border:none; background:none; padding:4px 2px; white-space:nowrap; }
-.nav-btn .nav-icon { font-size:18px; line-height:1; }
+.bottom-nav { height:var(--nav-h); background:var(--surface); border-top:1px solid var(--border); display:flex; flex-shrink:0; position:relative; z-index:100; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.bottom-nav::-webkit-scrollbar { display:none; }
+.nav-btn { flex:0 0 64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:9px; color:var(--muted); cursor:pointer; transition:color 0.2s; border:none; background:none; padding:4px 2px; white-space:nowrap; }
+.nav-btn .nav-icon { font-size:20px; line-height:1; }
 .nav-btn.active { color:var(--accent); }
+.nav-btn.active .nav-icon { filter:drop-shadow(0 0 5px rgba(0,212,170,0.5)); }
 .card { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:14px; margin-bottom:12px; }
 .card-title { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:10px; }
 .form-group { margin-bottom:14px; }
@@ -435,14 +437,15 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text
     </div>
   </div>
 
-  <!-- BOTTOM NAV (7 tabs) -->
+  <!-- BOTTOM NAV (swipe to see all tabs) -->
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="switchScreen('screen-add',this)"><span class="nav-icon">➕</span>Add</button>
-    <button class="nav-btn" onclick="switchScreen('screen-cc',this)"><span class="nav-icon">💳</span>CC</button>
+    <button class="nav-btn" onclick="switchScreen('screen-cc',this)"><span class="nav-icon">💳</span>CC Import</button>
     <button class="nav-btn" onclick="switchScreen('screen-dashboard',this);renderDashboard()"><span class="nav-icon">📊</span>Dashboard</button>
     <button class="nav-btn" onclick="switchScreen('screen-spending',this);renderSpending()"><span class="nav-icon">🧾</span>Spending</button>
     <button class="nav-btn" onclick="switchScreen('screen-summary',this);renderSummary()"><span class="nav-icon">📈</span>Summary</button>
     <button class="nav-btn" onclick="switchScreen('screen-settings',this);renderSettings()"><span class="nav-icon">⚙️</span>Settings</button>
+    <div style="flex:0 0 10px"></div>
   </nav>
 </div>
 
