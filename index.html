@@ -812,7 +812,6 @@ function renderSpendingRows(){
   currentSpTxns.forEach(t=>{if(!byDate[t.date])byDate[t.date]=[];byDate[t.date].push(t);});
   const dates=Object.keys(byDate).sort().reverse();
   const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  let holdTimer=null;
 
   document.getElementById('sp-list').innerHTML=dates.length?dates.map(date=>{
     const dt=byDate[date],dayTotal=dt.reduce((s,t)=>s+t.amount,0);
@@ -839,8 +838,7 @@ function renderSpendingRows(){
     </div>`;
   }).join(''):'<div class="empty-state"><div class="icon">🧾</div><p>No transactions found</p></div>';
 
-  // Attach hold events via JS (avoids inline closure issues)
-  let holdTimer=null;
+  // Prevent context menu on long press (stops browser popup)
   document.querySelectorAll('#sp-list .txn-row').forEach(row=>{
     row.addEventListener('contextmenu',e=>e.preventDefault());
   });
