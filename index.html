@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.1</title>
+<title>DollarWise v1.2.2</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -189,7 +189,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.1 · Kenneth & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.2 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -214,9 +214,8 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
       <div class="form-group">
         <label class="form-label">👤 Paid By</label>
         <div class="toggle-group" id="qa-paidby">
-          <button class="toggle-btn active-me"  data-val="me"    onclick="setToggle('qa-paidby',this)">Me</button>
-          <button class="toggle-btn"             data-val="wife"  onclick="setToggle('qa-paidby',this)">Wife</button>
-          <button class="toggle-btn"             data-val="joint" onclick="setToggle('qa-paidby',this)">Joint</button>
+          <button class="toggle-btn active-me"  data-val="me"   onclick="setToggle('qa-paidby',this)">Me</button>
+          <button class="toggle-btn"             data-val="wife" onclick="setToggle('qa-paidby',this)">Wife</button>
         </div>
       </div>
       <div class="form-group">
@@ -235,6 +234,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
           <div class="cat-chip" data-val="groceries"     onclick="selectCat(this)">🛒 Groceries</div>
           <div class="cat-chip" data-val="market"        onclick="selectCat(this)">🏪 Market</div>
           <div class="cat-chip" data-val="shopping"      onclick="selectCat(this)">🛍️ Shopping</div>
+          <div class="cat-chip" data-val="electronic"    onclick="selectCat(this)">📱 Electronic</div>
           <div class="cat-chip" data-val="entertainment" onclick="selectCat(this)">🎭 Entertainment</div>
           <div class="cat-chip" data-val="petrol"        onclick="selectCat(this)">⛽ Petrol</div>
           <div class="cat-chip" data-val="transport"     onclick="selectCat(this)">🚗 Transport</div>
@@ -411,7 +411,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.1</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.2</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -423,11 +423,11 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 
   <!-- NAV — swipe left to see all -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-add"      onclick="switchScreen('screen-add',this)">          <span class="nav-icon">➕</span>Add</button>
+    <button class="nav-btn active" id="nav-add"      onclick="switchScreen('screen-add',this)">            <span class="nav-icon">➕</span>Add</button>
     <button class="nav-btn"        id="nav-dashboard" onclick="switchScreen('screen-dashboard',this);renderDashboard()"><span class="nav-icon">📊</span>Dashboard</button>
     <button class="nav-btn"        id="nav-spending"  onclick="switchScreen('screen-spending',this);renderSpending()"> <span class="nav-icon">🧾</span>Spending</button>
-    <button class="nav-btn"        id="nav-cc"        onclick="switchScreen('screen-cc',this)">           <span class="nav-icon">💳</span>CC Import</button>
     <button class="nav-btn"        id="nav-summary"   onclick="switchScreen('screen-summary',this);renderSummary()">  <span class="nav-icon">📈</span>Summary</button>
+    <button class="nav-btn"        id="nav-cc"        onclick="switchScreen('screen-cc',this)">             <span class="nav-icon">💳</span>CC Import</button>
     <button class="nav-btn"        id="nav-settings"  onclick="switchScreen('screen-settings',this);renderSettings()"><span class="nav-icon">⚙️</span>Settings</button>
     <div style="flex:0 0 8px"></div>
   </nav>
@@ -489,7 +489,7 @@ const DEFAULT_KW_RULES=[
 function loadTxns(){ try{return JSON.parse(localStorage.getItem(STORE_KEY))||[];}catch{return[];} }
 function saveTxns(t){ localStorage.setItem(STORE_KEY,JSON.stringify(t)); }
 function loadSettings(){
-  const def={myName:'Kenneth',wifeName:'Wife',splitMe:50,kwRules:DEFAULT_KW_RULES};
+  const def={myName:'Hubby',wifeName:'Wife',splitMe:50,kwRules:DEFAULT_KW_RULES};
   try{
     const saved=JSON.parse(localStorage.getItem(SETTINGS_KEY))||{};
     const merged=Object.assign({},def,saved);
@@ -508,7 +508,8 @@ function saveSettings(s){ localStorage.setItem(SETTINGS_KEY,JSON.stringify(s)); 
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
 const CAT_META={
   food:{icon:'🍽️',label:'Food'},groceries:{icon:'🛒',label:'Groceries'},market:{icon:'🏪',label:'Market'},
-  shopping:{icon:'🛍️',label:'Shopping'},entertainment:{icon:'🎭',label:'Entertainment'},petrol:{icon:'⛽',label:'Petrol'},
+  shopping:{icon:'🛍️',label:'Shopping'},electronic:{icon:'📱',label:'Electronic'},
+  entertainment:{icon:'🎭',label:'Entertainment'},petrol:{icon:'⛽',label:'Petrol'},
   transport:{icon:'🚗',label:'Transport'},house:{icon:'🏠',label:'House'},utilities:{icon:'💡',label:'Utilities'},
   cashwife:{icon:'💵',label:'Cash to Wife'},parents:{icon:'👨‍👩‍',label:'Parents'},
   supplement:{icon:'💊',label:'Supplement & Medical'},others:{icon:'📦',label:'Others'},
@@ -629,7 +630,7 @@ function renderCCReview(){
           <option value="wifeonly">💜 Wife Only</option><option value="nosplit">🚫 No Split</option>
         </select>
         <select class="cc-mini-select" onchange="ccParsed[${i}].paidBy=this.value">
-          <option value="me">Me</option><option value="wife">Wife</option><option value="joint">Joint</option>
+          <option value="me">Me</option><option value="wife">Wife</option>
         </select>
       </div>
     </div>`).join('');
@@ -672,7 +673,7 @@ function renderDashboard(){
   const txns=loadTxns().filter(t=>t.date&&t.date.startsWith(ms));
   const settings=loadSettings();
   const sp=Math.round((settings.splitMe||50)), sw=100-sp;
-  const myName=settings.myName||'Kenneth', wifeName=settings.wifeName||'Wife';
+  const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
   const split=calcSplit(txns,settings);
   const total=txns.reduce((s,t)=>s+t.amount,0);
   const myPersonal=txns.filter(t=>t.purpose==='personal'&&t.paidBy==='me').reduce((s,t)=>s+t.amount,0);
@@ -689,19 +690,15 @@ function renderDashboard(){
     {l:'🚫 No Split',v:fmt(noSplit),c:'amber'},
     {l:'💵 Cash / 💳 CC',v:fmt(cash)+' / '+fmt(cc),c:''},
   ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value">${k.v}</div></div>`).join('');
-
-  // balance = myPaid - myShare
-  // POSITIVE (+) = I paid MORE than my share → wife still owes me
-  // NEGATIVE (-) = I paid LESS than my share → I owe wife
+  // POSITIVE (+) = I paid MORE → wife to pay me back
+  // NEGATIVE (-) = I paid LESS → I pay wife back
   let balHTML='';
   if(Math.abs(split.balance)<0.01){
     balHTML=`<div class="balance-box settled"><span class="balance-label settled">✅ Settled</span></div>`;
   } else if(split.balance>0){
-    // I overpaid → wife owes me
-    balHTML=`<div class="balance-box wife-owes"><span class="balance-label wife-owes">${wifeName} owes ${myName}</span><span class="balance-val wife-owes">${fmt(split.balance)}</span></div>`;
+    balHTML=`<div class="balance-box wife-owes"><span class="balance-label wife-owes">Wife to pay ${myName}</span><span class="balance-val wife-owes">${fmt(split.balance)}</span></div>`;
   } else {
-    // I underpaid → I owe wife
-    balHTML=`<div class="balance-box i-owe"><span class="balance-label i-owe">${myName} owes ${wifeName}</span><span class="balance-val i-owe">${fmt(Math.abs(split.balance))}</span></div>`;
+    balHTML=`<div class="balance-box i-owe"><span class="balance-label i-owe">${myName} to pay Wife</span><span class="balance-val i-owe">${fmt(Math.abs(split.balance))}</span></div>`;
   }
 
   document.getElementById('dash-split').innerHTML=`
@@ -709,9 +706,10 @@ function renderDashboard(){
     <div class="split-row"><span class="split-row-label">Total Home Expenses</span><span class="split-row-val">${fmt(split.total)}</span></div>
     <div class="split-row"><span class="split-row-label">${myName} paid (home)</span><span class="split-row-val green">${fmt(split.myPaid)}</span></div>
     <div class="split-row"><span class="split-row-label">${wifeName} paid (home)</span><span class="split-row-val purple">${fmt(split.wifePaid)}</span></div>
+    <div class="split-row"><span class="split-row-label">💜 Wife Only (for wife)</span><span class="split-row-val purple">${fmt(wifeOnly)}</span></div>
     <hr class="split-divider">
-    <div class="split-row"><span class="split-row-label">${myName}'s share (${sp}% of ${fmt(split.total)})</span><span class="split-row-val">${fmt(split.myShare)}</span></div>
-    <div class="split-row"><span class="split-row-label">${wifeName}'s share (${sw}% of ${fmt(split.total)})</span><span class="split-row-val">${fmt(split.wifeShare)}</span></div>
+    <div class="split-row"><span class="split-row-label">${myName}'s share</span><span class="split-row-val">${fmt(split.myShare)}</span></div>
+    <div class="split-row"><span class="split-row-label">${wifeName}'s share</span><span class="split-row-val">${fmt(split.wifeShare)}</span></div>
     ${balHTML}
     <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="openWAModal()">📱 WhatsApp Summary</button></div>`;
 
@@ -872,7 +870,7 @@ function renderSummary(){
   const allTxns=loadTxns();
   const txns=allTxns.filter(t=>t.date&&t.date.startsWith(ms));
   const settings=loadSettings();
-  const myName=settings.myName||'Kenneth', wifeName=settings.wifeName||'Wife';
+  const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
   const sp=Math.round(settings.splitMe||50), sw=100-sp;
   const prevMs=new Date(yr,mo-1,1);
   const prevStr=prevMs.getFullYear()+'-'+String(prevMs.getMonth()+1).padStart(2,'0');
@@ -880,31 +878,21 @@ function renderSummary(){
   const total=txns.reduce((s,t)=>s+t.amount,0);
   const cash=txns.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0);
   const cc=txns.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0);
-  const activeDays=new Set(txns.map(t=>t.date)).size;
-  const avgDay=activeDays>0?total/activeDays:0;
-  const daysInMonth=new Date(yr,mo+1,0).getDate();
-  const now=new Date();
-  const elapsed=(mo===now.getMonth()&&yr===now.getFullYear())?now.getDate():daysInMonth;
-  const projected=elapsed>0?(total/elapsed)*daysInMonth:0;
+  const wifeOnly=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
   const trend=prevTotal>0?((total-prevTotal)/prevTotal*100):null;
   const trendTag=trend!==null?(trend>=0?`<span class="trend-tag trend-up">▲ ${trend.toFixed(1)}%</span>`:`<span class="trend-tag trend-down">▼ ${Math.abs(trend).toFixed(1)}%</span>`):'';
   const split=calcSplit(txns,settings);
+  // Change 6: settlement wording
   let balLine='';
   if(Math.abs(split.balance)<0.01) balLine=`<span class="insight-val green">✅ Settled</span>`;
-  else if(split.balance>0) balLine=`<span class="insight-val green">${wifeName} owes ${myName} ${fmt(split.balance)}</span>`;
-  else balLine=`<span class="insight-val amber">${myName} owes ${wifeName} ${fmt(Math.abs(split.balance))}</span>`;
+  else if(split.balance>0) balLine=`<span class="insight-val green">Wife to pay ${myName} ${fmt(split.balance)}</span>`;
+  else balLine=`<span class="insight-val amber">${myName} to pay Wife ${fmt(Math.abs(split.balance))}</span>`;
   const cats={};txns.forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
-  const topCat=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
-  const merch={};txns.forEach(t=>{merch[t.merchant]=(merch[t.merchant]||0)+t.amount;});
-  const topM=Object.entries(merch).sort((a,b)=>b[1]-a[1])[0];
   const top5=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
   document.getElementById('sum-content').innerHTML=`
     <div class="summary-card">
       <div class="summary-title">📊 MONTH AT A GLANCE</div>
       <div class="insight-row"><span class="insight-label">Total Spend</span><span class="insight-val">${fmt(total)} ${trendTag}</span></div>
-      <div class="insight-row"><span class="insight-label">Transactions</span><span class="insight-val blue">${txns.length}</span></div>
-      <div class="insight-row"><span class="insight-label">Avg per active day</span><span class="insight-val">${fmt(avgDay)}</span></div>
-      <div class="insight-row"><span class="insight-label">Projected month total</span><span class="insight-val amber">${fmt(projected)}</span></div>
       <div class="insight-row"><span class="insight-label">Cash</span><span class="insight-val">${fmt(cash)}</span></div>
       <div class="insight-row"><span class="insight-label">Credit Card</span><span class="insight-val">${fmt(cc)}</span></div>
     </div>
@@ -913,15 +901,11 @@ function renderSummary(){
       <div class="insight-row"><span class="insight-label">Total Home</span><span class="insight-val green">${fmt(split.total)}</span></div>
       <div class="insight-row"><span class="insight-label">${myName} paid</span><span class="insight-val">${fmt(split.myPaid)}</span></div>
       <div class="insight-row"><span class="insight-label">${wifeName} paid</span><span class="insight-val purple">${fmt(split.wifePaid)}</span></div>
-      <div class="insight-row"><span class="insight-label">${myName}'s share (${sp}%)</span><span class="insight-val">${fmt(split.myShare)}</span></div>
-      <div class="insight-row"><span class="insight-label">${wifeName}'s share (${sw}%)</span><span class="insight-val">${fmt(split.wifeShare)}</span></div>
+      <div class="insight-row"><span class="insight-label">💜 Wife Only (for wife)</span><span class="insight-val purple">${fmt(wifeOnly)}</span></div>
+      <div class="insight-row"><span class="insight-label">${myName}'s share</span><span class="insight-val">${fmt(split.myShare)}</span></div>
+      <div class="insight-row"><span class="insight-label">${wifeName}'s share</span><span class="insight-val">${fmt(split.wifeShare)}</span></div>
       <div class="insight-row"><span class="insight-label">Settlement</span>${balLine}</div>
     </div>
-    ${topCat||topM?`<div class="summary-card">
-      <div class="summary-title">🏆 TOP SPENDS</div>
-      ${topCat?`<div class="insight-row"><span class="insight-label">Top Category</span><span class="insight-val">${catIcon(topCat[0])} ${catLabel(topCat[0])} · ${fmt(topCat[1])}</span></div>`:''}
-      ${topM?`<div class="insight-row"><span class="insight-label">Top Merchant</span><span class="insight-val">${topM[0]} · ${fmt(topM[1])}</span></div>`:''}
-    </div>`:''}
     <div class="summary-card">
       <div class="summary-title">📊 TOP 5 CATEGORIES</div>
       ${top5.length?top5.map(([c,v])=>`<div class="progress-row"><div class="progress-label"><span>${catIcon(c)} ${catLabel(c)}</span><span>${fmt(v)}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total>0?(v/total*100).toFixed(1):0}%"></div></div></div>`).join(''):'<div style="color:var(--muted);font-size:13px">No data</div>'}
@@ -949,7 +933,6 @@ function openTxnModal(id){
       <select class="form-input" id="m-paidby">
         <option value="me"    ${t.paidBy==='me'   ?'selected':''}>Me</option>
         <option value="wife"  ${t.paidBy==='wife' ?'selected':''}>Wife</option>
-        <option value="joint" ${t.paidBy==='joint'?'selected':''}>Joint</option>
       </select></div>
     <div class="form-group"><label class="form-label">Notes</label><input type="text" class="form-input" id="m-notes" value="${t.notes||''}"></div>
     <button class="btn btn-primary" onclick="saveTxnEdit('${id}')">💾 Save Changes</button>
@@ -971,7 +954,7 @@ function deleteTxn(id){
 // ── SETTINGS ──────────────────────────────────────────────────────────────────
 function renderSettings(){
   const s=loadSettings();
-  document.getElementById('set-myname').value=s.myName||'Kenneth';
+  document.getElementById('set-myname').value=s.myName||'Hubby';
   document.getElementById('set-wifename').value=s.wifeName||'Wife';
   document.getElementById('set-split').value=s.splitMe||50;
   updateSplitPreview();renderKWRules(s.kwRules||[]);
@@ -1022,15 +1005,24 @@ function generateAndShowWA(){
   const yr=dashDate.getFullYear(),mo=dashDate.getMonth();
   const ms=yr+'-'+String(mo+1).padStart(2,'0');
   const txns=loadTxns().filter(t=>t.date&&t.date.startsWith(ms));
-  const myName=settings.myName||'Kenneth', wifeName=settings.wifeName||'Wife';
+  const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
   const sp=Math.round(settings.splitMe||50), sw=100-sp;
   const split=calcSplit(txns,settings);
   const note=document.getElementById('wa-note').value.trim();
+  // Home breakdown
   const cats={};txns.filter(t=>t.purpose==='home').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
   const catLines=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`  ${catIcon(c)} ${catLabel(c).padEnd(14)}: $${fmtN(v)}`).join('\n');
-  let settleLine=Math.abs(split.balance)<0.01?'✅ All settled!':split.balance>0?`⚠️ ${wifeName} owes ${myName}: *$${fmtN(split.balance)}*`:`⚠️ ${myName} owes ${wifeName}: *$${fmtN(Math.abs(split.balance))}*`;
+  // Wife Only total (Change 10)
+  const wifeOnlyTotal=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
+  const wifeOnlyLine=wifeOnlyTotal>0?`\n💜 *WIFE ONLY (for wife)*: $${fmtN(wifeOnlyTotal)}`:'';
+  // Settlement wording (Change 6)
+  let settleLine='';
+  if(Math.abs(split.balance)<0.01) settleLine='✅ All settled!';
+  else if(split.balance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.balance)}*`;
+  else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.balance))}*`;
   const notePart=note?`💬 ${note}\n━━━━━━━━━━━━━━━━━━━━━━\n`:'';
-  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.total)}*\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n✂️ *SPLIT (${myName} ${sp}% / ${wifeName} ${sw}%)*\n  ${myName} paid:    $${fmtN(split.myPaid)}\n  ${wifeName} paid:   $${fmtN(split.wifePaid)}\n  ${myName} share:   $${fmtN(split.myShare)}\n  ${wifeName} share:  $${fmtN(split.wifeShare)}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.0_`;
+  // Change 7: replace split label
+  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.total)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaid)}\n  ${wifeName} paid:   $${fmtN(split.wifePaid)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.1_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
