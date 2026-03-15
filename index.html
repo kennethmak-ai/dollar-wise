@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.2</title>
+<title>DollarWise v1.2.4</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -17,12 +17,12 @@
   --bg:#0D1117; --surface:#161B27; --card:#1C2333; --border:#252E45;
   --accent:#00D4AA; --blue:#3B82F6; --warn:#F59E0B; --danger:#EF4444;
   --yellow:#FFD60A; --text:#E6EDF3; --muted:#C8D0DC; --r:12px;
-  --wife:#A855F7; --nav-h:64px;
+  --wife:#F472B6; --nav-h:64px;
 }
 body.light-mode {
   --bg:#E8E2D9; --surface:#FAF7F2; --card:#F0EBE2; --border:#A89880;
   --text:#1A1714; --muted:#5C5248; --accent:#0A7160; --warn:#7A5000;
-  --danger:#B83030; --blue:#1A5A8A; --yellow:#6B4E00;
+  --danger:#B83030; --blue:#1A5A8A; --yellow:#6B4E00; --wife:#DB2777;
 }
 body.light-mode nav,.light-mode .bottom-nav { background:var(--surface); border-top:2px solid var(--border); }
 body.light-mode .card,.light-mode .kpi-card,.light-mode .split-panel,.light-mode .summary-card { background:var(--surface); border-color:var(--border); }
@@ -62,7 +62,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .toggle-group { display:flex; gap:6px; flex-wrap:wrap; }
 .toggle-btn { flex:1; min-width:60px; padding:9px 6px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:12px; font-family:'DM Sans',sans-serif; cursor:pointer; text-align:center; transition:all .15s; }
 .toggle-btn.active-me,.toggle-btn.active-personal { border-color:var(--blue); background:rgba(59,130,246,.15); color:var(--blue); }
-.toggle-btn.active-wife,.toggle-btn.active-wifeonly { border-color:var(--wife); background:rgba(168,85,247,.15); color:var(--wife); }
+.toggle-btn.active-wife,.toggle-btn.active-wifeonly { border-color:var(--wife); background:rgba(244,114,182,.15); color:var(--wife); }
 .toggle-btn.active-joint,.toggle-btn.active-home { border-color:var(--accent); background:rgba(0,212,170,.15); color:var(--accent); }
 .toggle-btn.active-nosplit { border-color:var(--warn); background:rgba(245,158,11,.15); color:var(--warn); }
 .cat-chips { display:flex; flex-wrap:wrap; gap:7px; }
@@ -81,7 +81,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .kpi-value { font-family:'Space Mono',monospace; font-size:18px; font-weight:700; color:var(--text); }
 .kpi-card.green { border-color:rgba(0,212,170,.3); background:rgba(0,212,170,.07); } .kpi-card.green .kpi-value { color:var(--accent); }
 .kpi-card.blue  { border-color:rgba(59,130,246,.3); background:rgba(59,130,246,.07); } .kpi-card.blue .kpi-value  { color:var(--blue); }
-.kpi-card.purple{ border-color:rgba(168,85,247,.3); background:rgba(168,85,247,.07); } .kpi-card.purple .kpi-value{ color:var(--wife); }
+.kpi-card.purple{ border-color:rgba(244,114,182,.3); background:rgba(244,114,182,.07); } .kpi-card.purple .kpi-value{ color:var(--wife); }
 .kpi-card.amber { border-color:rgba(245,158,11,.3); background:rgba(245,158,11,.07); } .kpi-card.amber .kpi-value { color:var(--warn); }
 .split-panel { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:14px; margin-bottom:12px; }
 .split-title { font-family:'Space Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:1px; margin-bottom:12px; text-transform:uppercase; }
@@ -93,7 +93,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .split-divider { border:none; border-top:1px dashed var(--border); margin:6px 0; }
 .balance-box { margin-top:12px; border-radius:8px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; }
 .balance-box.wife-owes { background:rgba(0,212,170,.1); border:1px solid rgba(0,212,170,.3); }
-.balance-box.i-owe    { background:rgba(168,85,247,.1); border:1px solid rgba(168,85,247,.3); }
+.balance-box.i-owe    { background:rgba(244,114,182,.1); border:1px solid rgba(244,114,182,.3); }
 .balance-box.settled  { background:rgba(0,212,170,.08); border:1px solid rgba(0,212,170,.2); justify-content:center; }
 .balance-label { font-size:13px; font-weight:600; }
 .balance-label.wife-owes { color:var(--accent); } .balance-label.i-owe { color:var(--wife); } .balance-label.settled { color:var(--accent); }
@@ -114,7 +114,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .badge { font-size:10px; padding:2px 7px; border-radius:10px; font-weight:500; }
 .badge-home    { background:rgba(0,212,170,.15); color:var(--accent); }
 .badge-personal{ background:rgba(59,130,246,.15); color:var(--blue); }
-.badge-wife    { background:rgba(168,85,247,.15); color:var(--wife); }
+.badge-wife    { background:rgba(244,114,182,.15); color:var(--wife); }
 .badge-nosplit { background:rgba(245,158,11,.15); color:var(--warn); }
 .badge-cash    { background:rgba(255,214,10,.12); color:var(--yellow); }
 .badge-cc      { background:rgba(245,158,11,.15); color:var(--warn); }
@@ -189,7 +189,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.2 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.4 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -384,9 +384,8 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">🗂️ CC KEYWORD RULES</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Keywords → auto-category on CC import</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Auto-category rules on CC import · Read only</p>
       <div id="kw-list"></div>
-      <button class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="addKWRule()">+ Add Rule</button>
     </div>
     <div class="card">
       <div class="card-title">📤 EXPORT & BACKUP</div>
@@ -411,7 +410,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.2</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.4</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -978,13 +977,10 @@ function saveSettingsForm(){
   saveSettings(s);
 }
 function renderKWRules(rules){
-  document.getElementById('kw-list').innerHTML=rules.map((r,i)=>`
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <input type="text" class="form-input" style="flex:1;font-size:12px;padding:8px" value="${r.keywords}" oninput="updateKWRule(${i},'keywords',this.value)" placeholder="Keywords, comma separated">
-      <select class="form-input" style="width:130px;font-size:12px;padding:8px" onchange="updateKWRule(${i},'category',this.value)">
-        ${Object.entries(CAT_META).map(([v,m])=>`<option value="${v}" ${v===r.category?'selected':''}>${m.icon} ${m.label}</option>`).join('')}
-      </select>
-      <span onclick="removeKWRule(${i})" style="color:var(--danger);cursor:pointer;font-size:18px;padding:2px 6px">✕</span>
+  document.getElementById('kw-list').innerHTML=rules.map(r=>`
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px">
+      <div style="flex:1;font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.keywords}</div>
+      <div style="font-size:12px;color:var(--text);flex-shrink:0">${(CAT_META[r.category]||CAT_META.others).icon} ${(CAT_META[r.category]||CAT_META.others).label}</div>
     </div>`).join('');
 }
 function updateKWRule(i,field,val){const s=loadSettings();if(!s.kwRules[i])return;s.kwRules[i][field]=val;saveSettings(s);}
