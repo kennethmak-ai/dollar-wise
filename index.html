@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.4</title>
+<title>DollarWise v1.2.5</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -65,6 +65,8 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .toggle-btn.active-wife,.toggle-btn.active-wifeonly { border-color:var(--wife); background:rgba(244,114,182,.15); color:var(--wife); }
 .toggle-btn.active-joint,.toggle-btn.active-home { border-color:var(--accent); background:rgba(0,212,170,.15); color:var(--accent); }
 .toggle-btn.active-nosplit { border-color:var(--warn); background:rgba(245,158,11,.15); color:var(--warn); }
+.toggle-btn.active-fullbear { border-color:#EC4899; background:rgba(236,72,153,.15); color:#EC4899; }
+.badge-fullbear { background:rgba(236,72,153,.15); color:#EC4899; }
 .cat-chips { display:flex; flex-wrap:wrap; gap:7px; }
 .cat-chip { padding:7px 12px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:12px; cursor:pointer; transition:all .15s; white-space:nowrap; }
 .cat-chip.selected { border-color:var(--accent); background:rgba(0,212,170,.15); color:var(--accent); }
@@ -91,6 +93,18 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .split-row-val { font-family:'Space Mono',monospace; font-size:14px; color:var(--text); }
 .split-row-val.green { color:var(--accent); } .split-row-val.purple { color:var(--wife); }
 .split-divider { border:none; border-top:1px dashed var(--border); margin:6px 0; }
+.split-section-title { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.8px; padding:8px 0 4px; }
+.settlement-box { margin-top:10px; border-radius:10px; padding:14px; border:2px solid; }
+.settlement-box.wife-pays { background:rgba(0,212,170,.08); border-color:rgba(0,212,170,.4); }
+.settlement-box.hubby-pays { background:rgba(244,114,182,.08); border-color:rgba(244,114,182,.4); }
+.settlement-box.settled { background:rgba(0,212,170,.06); border-color:rgba(0,212,170,.2); text-align:center; }
+.settlement-label { font-size:13px; font-weight:600; display:block; margin-bottom:4px; }
+.settlement-label.wife-pays { color:var(--accent); }
+.settlement-label.hubby-pays { color:var(--wife); }
+.settlement-label.settled { color:var(--accent); }
+.settlement-amount { font-family:'Space Mono',monospace; font-size:22px; font-weight:700; }
+.settlement-amount.wife-pays { color:var(--accent); }
+.settlement-amount.hubby-pays { color:var(--wife); }
 .balance-box { margin-top:12px; border-radius:8px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; }
 .balance-box.wife-owes { background:rgba(0,212,170,.1); border:1px solid rgba(0,212,170,.3); }
 .balance-box.i-owe    { background:rgba(244,114,182,.1); border:1px solid rgba(244,114,182,.3); }
@@ -189,7 +203,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.4 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.5 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -221,18 +235,20 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
       <div class="form-group">
         <label class="form-label">🏷️ Purpose</label>
         <div class="toggle-group" id="qa-purpose">
-          <button class="toggle-btn active-home"  data-val="home"     onclick="setToggle('qa-purpose',this)">🏠 Home</button>
+          <button class="toggle-btn active-home"  data-val="home"      onclick="setToggle('qa-purpose',this)">🏠 Home</button>
           <button class="toggle-btn"              data-val="personal"  onclick="setToggle('qa-purpose',this)">👤 Personal</button>
           <button class="toggle-btn"              data-val="wifeonly"  onclick="setToggle('qa-purpose',this)">💜 Wife Only</button>
           <button class="toggle-btn"              data-val="nosplit"   onclick="setToggle('qa-purpose',this)">🚫 No Split</button>
+          <button class="toggle-btn"              data-val="fullbear"  onclick="setToggle('qa-purpose',this)">💯 Full Bear</button>
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">📂 Category</label>
         <div class="cat-chips" id="qa-category">
-          <div class="cat-chip" data-val="food"          onclick="selectCat(this)">🍽️ Food</div>
+          <div class="cat-chip" data-val="food"          onclick="selectCat(this)">🍽️ Dining</div>
           <div class="cat-chip" data-val="groceries"     onclick="selectCat(this)">🛒 Groceries</div>
-          <div class="cat-chip" data-val="market"        onclick="selectCat(this)">🏪 Market</div>
+          <div class="cat-chip" data-val="market"        onclick="selectCat(this)">🏪 Wet Market</div>
+          <div class="cat-chip" data-val="supermarket"   onclick="selectCat(this)">🏬 Supermarket</div>
           <div class="cat-chip" data-val="shopping"      onclick="selectCat(this)">🛍️ Shopping</div>
           <div class="cat-chip" data-val="electronic"    onclick="selectCat(this)">📱 Electronic</div>
           <div class="cat-chip" data-val="entertainment" onclick="selectCat(this)">🎭 Entertainment</div>
@@ -277,13 +293,14 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     <input type="text" class="search-input" placeholder="🔍 Search merchant…" id="sp-search" oninput="renderSpending()">
     <div class="month-chips" id="sp-months"></div>
     <div class="filter-row">
-      <div class="filter-chip active" data-val="all"      onclick="setSpFilter(this)">All</div>
-      <div class="filter-chip"        data-val="home"     onclick="setSpFilter(this)">🏠 Home</div>
-      <div class="filter-chip"        data-val="personal" onclick="setSpFilter(this)">👤 Personal</div>
-      <div class="filter-chip"        data-val="wifeonly" onclick="setSpFilter(this)">💜 Wife Only</div>
-      <div class="filter-chip"        data-val="nosplit"  onclick="setSpFilter(this)">🚫 No Split</div>
-      <div class="filter-chip"        data-val="cash"     onclick="setSpFilter(this)">💵 Cash</div>
-      <div class="filter-chip"        data-val="cc"       onclick="setSpFilter(this)">💳 CC</div>
+      <div class="filter-chip active" data-val="all"       onclick="setSpFilter(this)">All</div>
+      <div class="filter-chip"        data-val="home"      onclick="setSpFilter(this)">🏠 Home</div>
+      <div class="filter-chip"        data-val="personal"  onclick="setSpFilter(this)">👤 Personal</div>
+      <div class="filter-chip"        data-val="wifeonly"  onclick="setSpFilter(this)">💜 Wife Only</div>
+      <div class="filter-chip"        data-val="nosplit"   onclick="setSpFilter(this)">🚫 No Split</div>
+      <div class="filter-chip"        data-val="fullbear"  onclick="setSpFilter(this)">💯 Full Bear</div>
+      <div class="filter-chip"        data-val="cash"      onclick="setSpFilter(this)">💵 Cash</div>
+      <div class="filter-chip"        data-val="cc"        onclick="setSpFilter(this)">💳 CC</div>
     </div>
     <div id="sp-total-row"></div>
     <div id="sp-select-hint" style="display:none" class="select-mode-hint">✅ Select mode — tap rows to select, hold to deselect all</div>
@@ -410,7 +427,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.4</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.5</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -506,7 +523,8 @@ function saveSettings(s){ localStorage.setItem(SETTINGS_KEY,JSON.stringify(s)); 
 
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
 const CAT_META={
-  food:{icon:'🍽️',label:'Food'},groceries:{icon:'🛒',label:'Groceries'},market:{icon:'🏪',label:'Market'},
+  food:{icon:'🍽️',label:'Dining'},groceries:{icon:'🛒',label:'Groceries'},
+  market:{icon:'🏪',label:'Wet Market'},supermarket:{icon:'🏬',label:'Supermarket'},
   shopping:{icon:'🛍️',label:'Shopping'},electronic:{icon:'📱',label:'Electronic'},
   entertainment:{icon:'🎭',label:'Entertainment'},petrol:{icon:'⛽',label:'Petrol'},
   transport:{icon:'🚗',label:'Transport'},house:{icon:'🏠',label:'House'},utilities:{icon:'💡',label:'Utilities'},
@@ -627,6 +645,7 @@ function renderCCReview(){
         <select class="cc-mini-select" onchange="ccParsed[${i}].purpose=this.value">
           <option value="home">🏠 Home</option><option value="personal">👤 Personal</option>
           <option value="wifeonly">💜 Wife Only</option><option value="nosplit">🚫 No Split</option>
+          <option value="fullbear">💯 Full Bear</option>
         </select>
         <select class="cc-mini-select" onchange="ccParsed[${i}].paidBy=this.value">
           <option value="me">Me</option><option value="wife">Wife</option>
@@ -647,19 +666,26 @@ function importCC(){
   goCCStep(3); showToast('✅ '+valid.length+' imported!');
 }
 
-// ── SPLIT CALC (corrected) ───────────────────────────────────────────────────
-// Only purpose='home' counts. nosplit/personal/wifeonly excluded entirely.
-// balance = myPaidHome - myShare
-//   >0 → wife owes Kenneth  <0 → Kenneth owes wife  =0 → settled
+// ── SPLIT CALC ────────────────────────────────────────────────────────────────
+// HOME: split by %. FULLBEAR: payer paid, other party bears 100%.
+// Personal / wifeonly / nosplit: excluded from all calculations.
 function calcSplit(txns,settings){
   const pct=(settings.splitMe||50)/100;
+  // Home split
   const home=txns.filter(t=>t.purpose==='home');
-  const myPaid=home.filter(t=>t.paidBy==='me').reduce((s,t)=>s+t.amount,0);
-  const wifePaid=home.filter(t=>t.paidBy==='wife').reduce((s,t)=>s+t.amount,0);
-  const total=myPaid+wifePaid;
-  const myShare=total*pct, wifeShare=total*(1-pct);
-  const balance=myPaid-myShare;
-  return{total,myPaid,wifePaid,myShare,wifeShare,balance,pct};
+  const myPaidHome=home.filter(t=>t.paidBy==='me').reduce((s,t)=>s+t.amount,0);
+  const wifePaidHome=home.filter(t=>t.paidBy==='wife').reduce((s,t)=>s+t.amount,0);
+  const totalHome=myPaidHome+wifePaidHome;
+  const myShare=totalHome*pct, wifeShare=totalHome*(1-pct);
+  const homeBalance=myPaidHome-myShare; // +ve = wife owes me, -ve = i owe wife
+  // Full Bear: whoever paid, OTHER party bears 100%
+  const fb=txns.filter(t=>t.purpose==='fullbear');
+  const fbMyPaid=fb.filter(t=>t.paidBy==='me').reduce((s,t)=>s+t.amount,0);   // wife bears this
+  const fbWifePaid=fb.filter(t=>t.paidBy==='wife').reduce((s,t)=>s+t.amount,0); // i bear this
+  const fbBalance=fbMyPaid-fbWifePaid; // +ve = wife owes me fbMyPaid, and i owe wife fbWifePaid → net
+  // Final settlement
+  const finalBalance=homeBalance+fbBalance;
+  return{totalHome,myPaidHome,wifePaidHome,myShare,wifeShare,homeBalance,fbMyPaid,fbWifePaid,fbBalance,finalBalance,pct};
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
@@ -678,38 +704,52 @@ function renderDashboard(){
   const myPersonal=txns.filter(t=>t.purpose==='personal'&&t.paidBy==='me').reduce((s,t)=>s+t.amount,0);
   const wifeOnly=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
   const noSplit=txns.filter(t=>t.purpose==='nosplit').reduce((s,t)=>s+t.amount,0);
+  const fullBearTotal=txns.filter(t=>t.purpose==='fullbear').reduce((s,t)=>s+t.amount,0);
   const cash=txns.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0);
   const cc=txns.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0);
 
   document.getElementById('dash-kpis').innerHTML=[
     {l:'💰 Total Spend',v:fmt(total),c:''},
-    {l:'🏠 Home Expenses',v:fmt(split.total),c:'green'},
+    {l:'🏠 Home Expenses',v:fmt(split.totalHome),c:'green'},
     {l:'👤 My Personal',v:fmt(myPersonal),c:'blue'},
     {l:'💜 Wife Only',v:fmt(wifeOnly),c:'purple'},
     {l:'🚫 No Split',v:fmt(noSplit),c:'amber'},
     {l:'💵 Cash / 💳 CC',v:fmt(cash)+' / '+fmt(cc),c:''},
   ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value">${k.v}</div></div>`).join('');
-  // POSITIVE (+) = I paid MORE → wife to pay me back
-  // NEGATIVE (-) = I paid LESS → I pay wife back
-  let balHTML='';
-  if(Math.abs(split.balance)<0.01){
-    balHTML=`<div class="balance-box settled"><span class="balance-label settled">✅ Settled</span></div>`;
-  } else if(split.balance>0){
-    balHTML=`<div class="balance-box wife-owes"><span class="balance-label wife-owes">Wife to pay ${myName}</span><span class="balance-val wife-owes">${fmt(split.balance)}</span></div>`;
-  } else {
-    balHTML=`<div class="balance-box i-owe"><span class="balance-label i-owe">${myName} to pay Wife</span><span class="balance-val i-owe">${fmt(Math.abs(split.balance))}</span></div>`;
+
+  // ── Build final settlement box ──
+  function settlementBox(balance, myName, wifeName){
+    if(Math.abs(balance)<0.01) return`<div class="settlement-box settled"><span class="settlement-label settled">✅ Settled</span></div>`;
+    if(balance>0) return`<div class="settlement-box wife-pays"><span class="settlement-label wife-pays">Wife to pay ${myName}</span><span class="settlement-amount wife-pays">${fmt(balance)}</span></div>`;
+    return`<div class="settlement-box hubby-pays"><span class="settlement-label hubby-pays">${myName} to pay Wife</span><span class="settlement-amount hubby-pays">${fmt(Math.abs(balance))}</span></div>`;
   }
 
+  const showFB = fullBearTotal > 0;
+
   document.getElementById('dash-split').innerHTML=`
-    <div class="split-title">✂️ HOME SPLIT — ${ML[mo].toUpperCase()} ${yr}</div>
-    <div class="split-row"><span class="split-row-label">Total Home Expenses</span><span class="split-row-val">${fmt(split.total)}</span></div>
-    <div class="split-row"><span class="split-row-label">${myName} paid (home)</span><span class="split-row-val green">${fmt(split.myPaid)}</span></div>
-    <div class="split-row"><span class="split-row-label">${wifeName} paid (home)</span><span class="split-row-val purple">${fmt(split.wifePaid)}</span></div>
-    <div class="split-row"><span class="split-row-label">💜 Wife Only (for wife)</span><span class="split-row-val purple">${fmt(wifeOnly)}</span></div>
-    <hr class="split-divider">
+    <div class="split-title">💰 SETTLEMENT — ${ML[mo].toUpperCase()} ${yr}</div>
+
+    <div class="split-section-title">① HOME SPLIT (${sp}% / ${sw}%)</div>
+    <div class="split-row"><span class="split-row-label">Total Home Expenses</span><span class="split-row-val">${fmt(split.totalHome)}</span></div>
+    <div class="split-row"><span class="split-row-label">${myName} paid</span><span class="split-row-val green">${fmt(split.myPaidHome)}</span></div>
+    <div class="split-row"><span class="split-row-label">${wifeName} paid</span><span class="split-row-val" style="color:var(--wife)">${fmt(split.wifePaidHome)}</span></div>
     <div class="split-row"><span class="split-row-label">${myName}'s share</span><span class="split-row-val">${fmt(split.myShare)}</span></div>
     <div class="split-row"><span class="split-row-label">${wifeName}'s share</span><span class="split-row-val">${fmt(split.wifeShare)}</span></div>
-    ${balHTML}
+    <div class="split-row"><span class="split-row-label">💜 Wife Only (for wife)</span><span class="split-row-val" style="color:var(--wife)">${fmt(wifeOnly)}</span></div>
+    <div class="split-row"><span class="split-row-label">Home Balance</span><span class="split-row-val ${split.homeBalance>=0?'green':''}" style="${split.homeBalance<0?'color:var(--wife)':''}">${split.homeBalance>=0?'Wife owes '+fmt(split.homeBalance):myName+' owes '+fmt(Math.abs(split.homeBalance))}</span></div>
+
+    ${showFB?`
+    <hr class="split-divider">
+    <div class="split-section-title">② FULL BEAR (100% by other party)</div>
+    <div class="split-row"><span class="split-row-label">${myName} paid → ${wifeName} bears</span><span class="split-row-val green">${fmt(split.fbMyPaid)}</span></div>
+    <div class="split-row"><span class="split-row-label">${wifeName} paid → ${myName} bears</span><span class="split-row-val" style="color:var(--wife)">${fmt(split.fbWifePaid)}</span></div>
+    <div class="split-row"><span class="split-row-label">Full Bear Balance</span><span class="split-row-val ${split.fbBalance>=0?'green':''}" style="${split.fbBalance<0?'color:var(--wife)':''}">${split.fbBalance>=0?'Wife owes '+fmt(split.fbBalance):myName+' owes '+fmt(Math.abs(split.fbBalance))}</span></div>
+    `:''}
+
+    <hr class="split-divider">
+    <div class="split-section-title">③ FINAL SETTLEMENT</div>
+    ${settlementBox(split.finalBalance, myName, wifeName)}
+
     <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="openWAModal()">📱 WhatsApp Summary</button></div>`;
 
   const cats={};txns.forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
@@ -737,9 +777,10 @@ function setSpMonth(m){spMonth=m;exitSelectMode();renderSpending();}
 function setSpFilter(chip){document.querySelectorAll('#screen-spending .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');spFilter=chip.dataset.val;exitSelectMode();renderSpending();}
 
 function purposeBadge(p){
-  if(p==='home')    return'<span class="badge badge-home">Home</span>';
-  if(p==='wifeonly')return'<span class="badge badge-wife">Wife Only</span>';
-  if(p==='nosplit') return'<span class="badge badge-nosplit">No Split</span>';
+  if(p==='home')     return'<span class="badge badge-home">Home</span>';
+  if(p==='wifeonly') return'<span class="badge badge-wife">Wife Only</span>';
+  if(p==='nosplit')  return'<span class="badge badge-nosplit">No Split</span>';
+  if(p==='fullbear') return'<span class="badge badge-fullbear">💯 Full Bear</span>';
   return'<span class="badge badge-personal">Personal</span>';
 }
 
@@ -793,6 +834,7 @@ function renderSpending(){
   else if(spFilter==='personal') txns=txns.filter(t=>t.purpose==='personal');
   else if(spFilter==='wifeonly') txns=txns.filter(t=>t.purpose==='wifeonly');
   else if(spFilter==='nosplit')  txns=txns.filter(t=>t.purpose==='nosplit');
+  else if(spFilter==='fullbear') txns=txns.filter(t=>t.purpose==='fullbear');
   else if(spFilter==='cash') txns=txns.filter(t=>t.source==='cash');
   else if(spFilter==='cc')   txns=txns.filter(t=>t.source==='cc');
   if(search) txns=txns.filter(t=>(t.merchant||'').toLowerCase().includes(search));
@@ -878,14 +920,12 @@ function renderSummary(){
   const cash=txns.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0);
   const cc=txns.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0);
   const wifeOnly=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
+  const fullBearTotal=txns.filter(t=>t.purpose==='fullbear').reduce((s,t)=>s+t.amount,0);
   const trend=prevTotal>0?((total-prevTotal)/prevTotal*100):null;
   const trendTag=trend!==null?(trend>=0?`<span class="trend-tag trend-up">▲ ${trend.toFixed(1)}%</span>`:`<span class="trend-tag trend-down">▼ ${Math.abs(trend).toFixed(1)}%</span>`):'';
   const split=calcSplit(txns,settings);
-  // Change 6: settlement wording
-  let balLine='';
-  if(Math.abs(split.balance)<0.01) balLine=`<span class="insight-val green">✅ Settled</span>`;
-  else if(split.balance>0) balLine=`<span class="insight-val green">Wife to pay ${myName} ${fmt(split.balance)}</span>`;
-  else balLine=`<span class="insight-val amber">${myName} to pay Wife ${fmt(Math.abs(split.balance))}</span>`;
+  // Settlement wording
+  function balStr(bal){ if(Math.abs(bal)<0.01)return'<span class="insight-val green">✅ Settled</span>'; if(bal>0)return`<span class="insight-val green">Wife to pay ${myName} ${fmt(bal)}</span>`; return`<span class="insight-val amber">${myName} to pay Wife ${fmt(Math.abs(bal))}</span>`; }
   const cats={};txns.forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
   const top5=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
   document.getElementById('sum-content').innerHTML=`
@@ -896,14 +936,25 @@ function renderSummary(){
       <div class="insight-row"><span class="insight-label">Credit Card</span><span class="insight-val">${fmt(cc)}</span></div>
     </div>
     <div class="summary-card">
-      <div class="summary-title">🏠 HOME SPLIT — ${ML[mo].toUpperCase()} ${yr}</div>
-      <div class="insight-row"><span class="insight-label">Total Home</span><span class="insight-val green">${fmt(split.total)}</span></div>
-      <div class="insight-row"><span class="insight-label">${myName} paid</span><span class="insight-val">${fmt(split.myPaid)}</span></div>
-      <div class="insight-row"><span class="insight-label">${wifeName} paid</span><span class="insight-val purple">${fmt(split.wifePaid)}</span></div>
-      <div class="insight-row"><span class="insight-label">💜 Wife Only (for wife)</span><span class="insight-val purple">${fmt(wifeOnly)}</span></div>
+      <div class="summary-title">💰 SETTLEMENT — ${ML[mo].toUpperCase()} ${yr}</div>
+      <div class="split-section-title" style="margin-bottom:8px">① HOME SPLIT (${sp}% / ${sw}%)</div>
+      <div class="insight-row"><span class="insight-label">Total Home</span><span class="insight-val green">${fmt(split.totalHome)}</span></div>
+      <div class="insight-row"><span class="insight-label">${myName} paid</span><span class="insight-val">${fmt(split.myPaidHome)}</span></div>
+      <div class="insight-row"><span class="insight-label">${wifeName} paid</span><span class="insight-val" style="color:var(--wife)">${fmt(split.wifePaidHome)}</span></div>
+      <div class="insight-row"><span class="insight-label">💜 Wife Only (for wife)</span><span class="insight-val" style="color:var(--wife)">${fmt(wifeOnly)}</span></div>
       <div class="insight-row"><span class="insight-label">${myName}'s share</span><span class="insight-val">${fmt(split.myShare)}</span></div>
       <div class="insight-row"><span class="insight-label">${wifeName}'s share</span><span class="insight-val">${fmt(split.wifeShare)}</span></div>
-      <div class="insight-row"><span class="insight-label">Settlement</span>${balLine}</div>
+      <div class="insight-row"><span class="insight-label">Home Balance</span>${balStr(split.homeBalance)}</div>
+      ${fullBearTotal>0?`
+      <hr class="split-divider" style="margin:10px 0">
+      <div class="split-section-title" style="margin-bottom:8px">② FULL BEAR</div>
+      <div class="insight-row"><span class="insight-label">${myName} paid → ${wifeName} bears</span><span class="insight-val green">${fmt(split.fbMyPaid)}</span></div>
+      <div class="insight-row"><span class="insight-label">${wifeName} paid → ${myName} bears</span><span class="insight-val" style="color:var(--wife)">${fmt(split.fbWifePaid)}</span></div>
+      <div class="insight-row"><span class="insight-label">Full Bear Balance</span>${balStr(split.fbBalance)}</div>
+      `:''}
+      <hr class="split-divider" style="margin:10px 0">
+      <div class="split-section-title" style="margin-bottom:8px">③ FINAL SETTLEMENT</div>
+      <div class="insight-row"><span class="insight-label">Amount</span>${balStr(split.finalBalance)}</div>
     </div>
     <div class="summary-card">
       <div class="summary-title">📊 TOP 5 CATEGORIES</div>
@@ -927,6 +978,7 @@ function openTxnModal(id){
         <option value="personal" ${t.purpose==='personal'?'selected':''}>👤 Personal</option>
         <option value="wifeonly" ${t.purpose==='wifeonly'?'selected':''}>💜 Wife Only</option>
         <option value="nosplit"  ${t.purpose==='nosplit' ?'selected':''}>🚫 No Split</option>
+        <option value="fullbear" ${t.purpose==='fullbear'?'selected':''}>💯 Full Bear</option>
       </select></div>
     <div class="form-group"><label class="form-label">Paid By</label>
       <select class="form-input" id="m-paidby">
@@ -1005,20 +1057,17 @@ function generateAndShowWA(){
   const sp=Math.round(settings.splitMe||50), sw=100-sp;
   const split=calcSplit(txns,settings);
   const note=document.getElementById('wa-note').value.trim();
-  // Home breakdown
   const cats={};txns.filter(t=>t.purpose==='home').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
   const catLines=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`  ${catIcon(c)} ${catLabel(c).padEnd(14)}: $${fmtN(v)}`).join('\n');
-  // Wife Only total (Change 10)
   const wifeOnlyTotal=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
   const wifeOnlyLine=wifeOnlyTotal>0?`\n💜 *WIFE ONLY (for wife)*: $${fmtN(wifeOnlyTotal)}`:'';
-  // Settlement wording (Change 6)
+  const fbSection=split.fbMyPaid>0||split.fbWifePaid>0?`\n━━━━━━━━━━━━━━━━━━━━━━\n💯 *② FULL BEAR*\n  ${myName} paid → ${wifeName} bears: $${fmtN(split.fbMyPaid)}\n  ${wifeName} paid → ${myName} bears: $${fmtN(split.fbWifePaid)}\n  Full Bear Balance: ${split.fbBalance>=0?'Wife owes $'+fmtN(split.fbBalance):myName+' owes $'+fmtN(Math.abs(split.fbBalance))}`:'';
   let settleLine='';
-  if(Math.abs(split.balance)<0.01) settleLine='✅ All settled!';
-  else if(split.balance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.balance)}*`;
-  else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.balance))}*`;
+  if(Math.abs(split.finalBalance)<0.01) settleLine='✅ All settled!';
+  else if(split.finalBalance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.finalBalance)}*`;
+  else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.finalBalance))}*`;
   const notePart=note?`💬 ${note}\n━━━━━━━━━━━━━━━━━━━━━━\n`:'';
-  // Change 7: replace split label
-  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.total)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaid)}\n  ${wifeName} paid:   $${fmtN(split.wifePaid)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.1_`;
+  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.5_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
