@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.8</title>
+<title>DollarWise v1.2.9</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -216,7 +216,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.8 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.9 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -338,6 +338,16 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 
     <!-- STEP 1: CAPTURE -->
     <div class="cc-step active" id="cc-step1">
+      <!-- PENDING REVIEW BANNER — shows if scanned data is waiting -->
+      <div id="cc-pending-banner" style="display:none;margin-bottom:12px">
+        <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.4);border-radius:10px;padding:14px 16px">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--warn);letter-spacing:.8px;margin-bottom:6px">⏳ PENDING REVIEW</div>
+          <div style="font-size:13px;color:var(--text);margin-bottom:10px" id="cc-pending-desc">Scanned transactions waiting to be reviewed</div>
+          <button class="btn btn-primary btn-sm" onclick="resumePendingReview()" style="width:100%">📋 Continue Reviewing →</button>
+          <div style="height:6px"></div>
+          <button class="btn btn-secondary btn-sm" onclick="discardPending()" style="width:100%;font-size:12px;color:var(--danger);border-color:var(--danger)">🗑️ Discard & Scan Fresh</button>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title">💳 CC STATEMENT SCAN</div>
         <!-- API key warning -->
@@ -389,12 +399,13 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     <div class="cc-step" id="cc-step2">
       <div class="card">
         <div class="card-title">✏️ REVIEW & CATEGORIZE</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Review each transaction. Tap ✕ to remove.</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Edit merchant or amount by tapping the fields. Tap ✕ to remove a row.</p>
+        <p style="font-size:12px;color:var(--warn);margin-bottom:12px" id="cc-pending-count"></p>
         <div id="cc-review-list"></div>
         <div style="height:10px"></div>
         <button class="btn btn-primary" onclick="importCC()">✅ IMPORT ALL</button>
         <div style="height:8px"></div>
-        <button class="btn btn-secondary" onclick="goCCStep(1)">← Scan Again</button>
+        <button class="btn btn-secondary" onclick="goCCStep(1)">← Back</button>
       </div>
     </div>
 
@@ -486,7 +497,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.8</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.9</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -649,24 +660,86 @@ function saveQuickAdd(){
 }
 
 // ── CC SCAN (Gemini AI) ───────────────────────────────────────────────────────
-const GEMINI_KEY_STORE = 'dw_gemini_key';
+const GEMINI_KEY_STORE='dw_gemini_key';
+const CC_PENDING_KEY='dw_cc_pending'; // localStorage key for pending review data
+
 function getGeminiKey(){ return localStorage.getItem(GEMINI_KEY_STORE)||''; }
 function saveGeminiKey(){
   const val=document.getElementById('set-gemini-key').value.trim();
   localStorage.setItem(GEMINI_KEY_STORE,val);
   const st=document.getElementById('gemini-key-status');
-  if(val){ st.textContent='✅ Key saved'; st.style.color='var(--accent)'; }
-  else { st.textContent=''; }
+  if(val){st.textContent='✅ Key saved';st.style.color='var(--accent)';}
+  else{st.textContent='';}
+}
+
+// Save pending to localStorage so it survives app close
+function savePending(){
+  try{ localStorage.setItem(CC_PENDING_KEY,JSON.stringify(ccParsed)); }catch{}
+}
+function loadPending(){
+  try{ const d=localStorage.getItem(CC_PENDING_KEY); return d?JSON.parse(d):null; }catch{ return null; }
+}
+function clearPending(){
+  localStorage.removeItem(CC_PENDING_KEY);
+  ccParsed=[];
 }
 
 let ccParsed=[];
+
 function goCCStep(n){
   document.querySelectorAll('.cc-step').forEach(s=>s.classList.remove('active'));
   if(n===1.5) document.getElementById('cc-step-scanning').classList.add('active');
   else document.getElementById('cc-step'+n).classList.add('active');
-  // Update dots: 1=step1, 1.5=scanning(dot1 done), 2=dot2 done, 3=dot3 done
   const dotDone=n>=3?3:n>=2?2:1;
   for(let i=1;i<=3;i++) document.getElementById('step'+i+'-dot').classList.toggle('done',i<=dotDone);
+}
+
+function initCCScreen(){
+  // Check for pending data in localStorage
+  const pending=loadPending();
+  const hasPending=pending&&pending.filter(t=>t!==null).length>0;
+  if(hasPending){
+    ccParsed=pending;
+    // Show pending banner on step 1
+    const banner=document.getElementById('cc-pending-banner');
+    const desc=document.getElementById('cc-pending-desc');
+    const count=pending.filter(t=>t!==null).length;
+    if(banner) banner.style.display='block';
+    if(desc) desc.textContent=`${count} transaction${count>1?'s':''} waiting for your review`;
+    goCCStep(1);
+  } else {
+    clearPending();
+    const banner=document.getElementById('cc-pending-banner');
+    if(banner) banner.style.display='none';
+    goCCStep(1);
+    const preview=document.getElementById('cc-preview-img');
+    if(preview){ preview.style.display='none'; preview.src=''; }
+    document.getElementById('cc-camera-input').value='';
+    document.getElementById('cc-file-input').value='';
+  }
+  // Always check key warning
+  const warn=document.getElementById('cc-key-warning');
+  if(warn) warn.style.display=getGeminiKey()?'none':'block';
+}
+
+function resumePendingReview(){
+  const pending=loadPending();
+  if(!pending||!pending.filter(t=>t!==null).length){
+    showToast('⚠️ No pending transactions',true); return;
+  }
+  ccParsed=pending;
+  renderCCReview(); goCCStep(2);
+  const count=ccParsed.filter(t=>t!==null).length;
+  const pc=document.getElementById('cc-pending-count');
+  if(pc) pc.textContent=`⏳ ${count} transaction${count>1?'s':''} pending import`;
+}
+
+function discardPending(){
+  if(!confirm('Discard all scanned transactions? This cannot be undone.')) return;
+  clearPending();
+  const banner=document.getElementById('cc-pending-banner');
+  if(banner) banner.style.display='none';
+  showToast('🗑️ Pending transactions discarded');
 }
 
 function triggerCamera(){
@@ -686,28 +759,24 @@ function checkGeminiKey(){
 
 function handleFileSelected(input){
   const file=input.files[0]; if(!file) return;
-  // Show preview for images
   const preview=document.getElementById('cc-preview-img');
   if(file.type.startsWith('image/')){
     const reader=new FileReader();
     reader.onload=e=>{ preview.src=e.target.result; preview.style.display='block'; };
     reader.readAsDataURL(file);
   } else { preview.style.display='none'; }
-  // Start scanning
   scanWithGemini(file);
 }
 
 async function scanWithGemini(file){
-  goCCStep(1.5); // show scanning screen
+  goCCStep(1.5);
   const key=getGeminiKey();
   const bankBtn=document.querySelector('#cc-bank .toggle-btn[class*="active-"]');
   const bank=bankBtn?bankBtn.dataset.val:'citi';
   const settings=loadSettings();
   try {
-    // Convert file to base64
     const base64=await fileToBase64(file);
     const mimeType=file.type==='application/pdf'?'application/pdf':file.type||'image/jpeg';
-    // Build Gemini prompt
     const prompt=`You are reading a credit card statement image or PDF. Extract ALL transaction lines you can see.
 Return ONLY a JSON object with no markdown, no explanation, no code fences:
 {
@@ -736,17 +805,13 @@ Rules:
     });
     const data=await response.json();
     if(data.error){ throw new Error(data.error.message||'Gemini API error'); }
-    // Extract text from response
     const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    // Strip markdown fences and extract JSON
     let cleaned=raw.replace(/```json|```/g,'').trim();
-    // Extract first { } block in case there's extra text
     const match=cleaned.match(/\{[\s\S]*\}/);
     if(!match) throw new Error('No JSON found in response');
     const parsed=JSON.parse(match[0]);
     const txns=parsed.transactions||[];
     if(!txns.length){ showToast('⚠️ No transactions found in scan',true); goCCStep(1); return; }
-    // Auto-categorise and build ccParsed
     ccParsed=txns.map(t=>({
       id:'cc_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
       date:t.date||todayStr(),
@@ -756,32 +821,20 @@ Rules:
       purpose:'home', paidBy:'me', source:'cc', ccBank:bank, notes:'',
       createdAt:new Date().toISOString()
     })).filter(t=>t.amount>0);
-    // Override purpose for known personal categories
     ccParsed.forEach(t=>{ if(['petrol','entertainment','shopping'].includes(t.category)) t.purpose='personal'; });
     if(!ccParsed.length){ showToast('⚠️ No valid transactions extracted',true); goCCStep(1); return; }
+    // Save to localStorage immediately — persists across navigation and app close
+    savePending();
     renderCCReview(); goCCStep(2);
-    showToast(`✅ ${ccParsed.length} transactions extracted!`);
+    const count=ccParsed.length;
+    const pc=document.getElementById('cc-pending-count');
+    if(pc) pc.textContent=`⏳ ${count} transaction${count>1?'s':''} pending import`;
+    showToast(`✅ ${count} transactions extracted!`);
   } catch(err){
     console.error(err);
-    showToast('⚠️ Scan failed: '+err.message, true);
+    showToast('⚠️ Scan failed: '+err.message,true);
     goCCStep(1);
   }
-}
-
-function initCCScreen(){
-  // Only reset to step 1 if we're not already on the review step with data
-  const reviewActive=document.getElementById('cc-step2').classList.contains('active');
-  const hasData=ccParsed.filter(t=>t!==null).length>0;
-  if(!reviewActive || !hasData){
-    goCCStep(1);
-    const preview=document.getElementById('cc-preview-img');
-    if(preview){ preview.style.display='none'; preview.src=''; }
-    document.getElementById('cc-camera-input').value='';
-    document.getElementById('cc-file-input').value='';
-  }
-  // Always check key warning
-  const warn=document.getElementById('cc-key-warning');
-  if(warn) warn.style.display=getGeminiKey()?'none':'block';
 }
 
 function fileToBase64(file){
@@ -809,12 +862,12 @@ function renderCCReview(){
     <div class="cc-txn-review" id="cc-row-${i}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px">
         <input type="text" class="cc-edit-field" value="${(t.merchant||'').replace(/"/g,'&quot;')}"
-          oninput="ccParsed[${i}].merchant=this.value"
+          oninput="ccParsed[${i}].merchant=this.value;savePending()"
           style="flex:1;font-size:13px;font-weight:500;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;"
           placeholder="Merchant name">
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
           <input type="number" class="cc-edit-field" value="${t.amount}"
-            oninput="ccParsed[${i}].amount=parseFloat(this.value)||0"
+            oninput="ccParsed[${i}].amount=parseFloat(this.value)||0;savePending()"
             style="width:72px;font-size:13px;font-weight:700;font-family:'Space Mono',monospace;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 6px;color:var(--accent);text-align:right;outline:none;"
             step="0.01" min="0">
           <span onclick="removeCCRow(${i})" style="color:var(--danger);cursor:pointer;font-size:18px;line-height:1;padding:2px">✕</span>
@@ -822,13 +875,13 @@ function renderCCReview(){
       </div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${t.date}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <select class="cc-mini-select" onchange="ccParsed[${i}].category=this.value">${catOptions}</select>
-        <select class="cc-mini-select" onchange="ccParsed[${i}].purpose=this.value">
+        <select class="cc-mini-select" onchange="ccParsed[${i}].category=this.value;savePending()">${catOptions}</select>
+        <select class="cc-mini-select" onchange="ccParsed[${i}].purpose=this.value;savePending()">
           <option value="home">🏠 Home</option><option value="personal">👤 Personal</option>
           <option value="wifeonly">💜 Wife Only</option><option value="nosplit">🚫 No Split</option>
           <option value="fullbear">💯 Full Bear</option>
         </select>
-        <select class="cc-mini-select" onchange="ccParsed[${i}].paidBy=this.value">
+        <select class="cc-mini-select" onchange="ccParsed[${i}].paidBy=this.value;savePending()">
           <option value="me">Me</option><option value="wife">Wife</option>
         </select>
       </div>
@@ -838,12 +891,23 @@ function renderCCReview(){
     const s=row.querySelectorAll('.cc-mini-select'); s[0].value=t.category; s[1].value=t.purpose; s[2].value=t.paidBy;
   });
 }
-function removeCCRow(i){ccParsed[i]=null;const el=document.getElementById('cc-row-'+i);if(el)el.style.display='none';}
+function removeCCRow(i){
+  ccParsed[i]=null;
+  const el=document.getElementById('cc-row-'+i);
+  if(el) el.style.display='none';
+  savePending(); // keep localStorage in sync after removal
+  const remaining=ccParsed.filter(t=>t!==null).length;
+  const pc=document.getElementById('cc-pending-count');
+  if(pc) pc.textContent=remaining>0?`⏳ ${remaining} transaction${remaining>1?'s':''} pending import`:'';
+}
 function importCC(){
   const valid=ccParsed.filter(t=>t!==null);
   if(!valid.length){showToast('⚠️ Nothing to import',true);return;}
   const txns=loadTxns(); valid.forEach(t=>txns.push(t)); saveTxns(txns);
-  document.getElementById('cc-done-msg').textContent=valid.length+' transactions imported.';
+  clearPending(); // clear pending from localStorage after successful import
+  const banner=document.getElementById('cc-pending-banner');
+  if(banner) banner.style.display='none';
+  document.getElementById('cc-done-msg').textContent=valid.length+' transactions imported successfully.';
   goCCStep(3); showToast('✅ '+valid.length+' imported!');
 }
 
@@ -1254,7 +1318,7 @@ function generateAndShowWA(){
   else if(split.finalBalance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.finalBalance)}*`;
   else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.finalBalance))}*`;
   const notePart=note?`💬 ${note}\n━━━━━━━━━━━━━━━━━━━━━━\n`:'';
-  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.8_`;
+  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.9_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
