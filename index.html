@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.10</title>
+<title>DollarWise v1.2.11</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -216,7 +216,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.10 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.11 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -498,7 +498,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.10</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.11</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -859,22 +859,23 @@ function autoCategory(merchant,rules){
 }
 function renderCCReview(){
   const catOptions=Object.entries(CAT_META).map(([v,m])=>`<option value="${v}">${m.icon} ${m.label}</option>`).join('');
-  document.getElementById('cc-review-list').innerHTML=ccParsed.map((t,i)=>`
-    <div class="cc-txn-review" id="cc-row-${i}">
+  document.getElementById('cc-review-list').innerHTML=ccParsed.map((t,i)=>{
+    if(!t) return ''; // skip nulls
+    return`<div class="cc-txn-review" id="cc-row-${i}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px">
-        <input type="text" class="cc-edit-field" value="${(t.merchant||'').replace(/"/g,'&quot;')}"
+        <input type="text" class="cc-edit-field" value="${(t.merchant||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}"
           oninput="ccParsed[${i}].merchant=this.value;savePending()"
           style="flex:1;font-size:13px;font-weight:500;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;"
           placeholder="Merchant name">
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-          <input type="number" class="cc-edit-field" value="${t.amount}"
+          <input type="number" class="cc-edit-field" value="${t.amount||0}"
             oninput="ccParsed[${i}].amount=parseFloat(this.value)||0;savePending()"
             style="width:72px;font-size:13px;font-weight:700;font-family:'Space Mono',monospace;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 6px;color:var(--accent);text-align:right;outline:none;"
             step="0.01" min="0">
           <span onclick="removeCCRow(${i})" style="color:var(--danger);cursor:pointer;font-size:18px;line-height:1;padding:2px">✕</span>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${t.date}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${t.date||''}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <select class="cc-mini-select" onchange="ccParsed[${i}].category=this.value;savePending()">${catOptions}</select>
         <select class="cc-mini-select" onchange="ccParsed[${i}].purpose=this.value;savePending()">
@@ -886,10 +887,16 @@ function renderCCReview(){
           <option value="me">Me</option><option value="wife">Wife</option>
         </select>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+  // Set dropdown values safely — skip nulls, fallback to 'others'/'home'/'me' if value not found
   ccParsed.forEach((t,i)=>{
-    const row=document.getElementById('cc-row-'+i); if(!row)return;
-    const s=row.querySelectorAll('.cc-mini-select'); s[0].value=t.category; s[1].value=t.purpose; s[2].value=t.paidBy;
+    if(!t) return;
+    const row=document.getElementById('cc-row-'+i); if(!row) return;
+    const s=row.querySelectorAll('.cc-mini-select');
+    if(s[0]){ s[0].value=CAT_META[t.category]?t.category:'others'; }
+    if(s[1]){ s[1].value=['home','personal','wifeonly','nosplit','fullbear'].includes(t.purpose)?t.purpose:'home'; }
+    if(s[2]){ s[2].value=t.paidBy==='wife'?'wife':'me'; }
   });
 }
 function removeCCRow(i){
@@ -1319,7 +1326,7 @@ function generateAndShowWA(){
   else if(split.finalBalance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.finalBalance)}*`;
   else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.finalBalance))}*`;
   const notePart=note?`💬 ${note}\n━━━━━━━━━━━━━━━━━━━━━━\n`:'';
-  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.10_`;
+  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.11_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
