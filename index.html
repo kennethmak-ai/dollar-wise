@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.9</title>
+<title>DollarWise v1.2.10</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -216,7 +216,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.9 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.10 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -259,6 +259,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
         <label class="form-label">📂 Category</label>
         <div class="cat-chips" id="qa-category">
           <div class="cat-chip" data-val="food"          onclick="selectCat(this)">🍽️ Dining</div>
+          <div class="cat-chip" data-val="meal"          onclick="selectCat(this)">🥘 Meal</div>
           <div class="cat-chip" data-val="groceries"     onclick="selectCat(this)">🛒 Groceries</div>
           <div class="cat-chip" data-val="market"        onclick="selectCat(this)">🏪 Wet Market</div>
           <div class="cat-chip" data-val="supermarket"   onclick="selectCat(this)">🏬 Supermarket</div>
@@ -497,7 +498,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.9</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.10</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -593,7 +594,7 @@ function saveSettings(s){ localStorage.setItem(SETTINGS_KEY,JSON.stringify(s)); 
 
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
 const CAT_META={
-  food:{icon:'🍽️',label:'Dining'},groceries:{icon:'🛒',label:'Groceries'},
+  food:{icon:'🍽️',label:'Dining'},meal:{icon:'🥘',label:'Meal'},groceries:{icon:'🛒',label:'Groceries'},
   market:{icon:'🏪',label:'Wet Market'},supermarket:{icon:'🏬',label:'Supermarket'},
   shopping:{icon:'🛍️',label:'Shopping'},electronic:{icon:'📱',label:'Electronic'},
   entertainment:{icon:'🎭',label:'Entertainment'},petrol:{icon:'⛽',label:'Petrol'},
@@ -1318,7 +1319,7 @@ function generateAndShowWA(){
   else if(split.finalBalance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.finalBalance)}*`;
   else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.finalBalance))}*`;
   const notePart=note?`💬 ${note}\n━━━━━━━━━━━━━━━━━━━━━━\n`:'';
-  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.9_`;
+  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.10_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
