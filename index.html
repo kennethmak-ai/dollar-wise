@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.3.4</title>
+<title>DollarWise v1.3.5</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -247,7 +247,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.4 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.5 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -529,7 +529,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.4</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.5</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -590,6 +590,7 @@ function toggleTheme() {
 })();
 
 // ── CHANGELOG ─────────────────────────────────────────────────────────────────
+// v1.3.5  Spending: hold 1 second to edit; Edit screen buttons ordered Save Changes, Cancel Edit, Delete.
 // v1.3.4  Second confirmation for Clear ALL Data; solid highlight for Spending month and filter chips.
 // v1.3.3  Spending: 2-second hold opens the Edit screen (tap does nothing); Cancel edit button on Edit screen;
 //         Select All button for bulk delete; light-mode fix for solid selected buttons.
@@ -1159,7 +1160,7 @@ function renderSpending(){
   txns=txns.sort((a,b)=>b.date.localeCompare(a.date));
   currentSpTxns=txns;
   const grand=txns.reduce((s,t)=>s+t.amount,0);
-  document.getElementById('sp-total-row').innerHTML=txns.length?`<div class="spending-total-row"><span class="spending-total-label">Total (${txns.length}) · Hold 2s to edit</span><span class="spending-total-val">${fmt(grand)}</span></div>`+(selectMode?'':`<div style="display:flex;justify-content:flex-end;margin:-4px 0 10px"><button class="btn btn-secondary btn-sm" onclick="startSelectAll()">☑️ Select All</button></div>`):'';
+  document.getElementById('sp-total-row').innerHTML=txns.length?`<div class="spending-total-row"><span class="spending-total-label">Total (${txns.length}) · Hold 1s to edit</span><span class="spending-total-val">${fmt(grand)}</span></div>`+(selectMode?'':`<div style="display:flex;justify-content:flex-end;margin:-4px 0 10px"><button class="btn btn-secondary btn-sm" onclick="startSelectAll()">☑️ Select All</button></div>`):'';
   if(selectMode) updateDeleteBtn();
   renderSpendingRows();
 }
@@ -1204,9 +1205,9 @@ function renderSpendingRows(){
 }
 
 // Hold-to-select handlers
-// Hold 2 s to open the Edit screen. Moving the finger more than 10px (scrolling) cancels the hold.
+// Hold 1 s to open the Edit screen. Moving the finger more than 10px (scrolling) cancels the hold.
 // A quick tap does nothing, except in select mode where it ticks/unticks the row.
-const HOLD_MS=2000, HOLD_MOVE_PX=10;
+const HOLD_MS=1000, HOLD_MOVE_PX=10;
 let _holdTimer=null, _holdX=0, _holdY=0, _holdFired=false, _lastTouch=0;
 function _pt(e){ const t=e&&e.touches&&e.touches[0]; return t?{x:t.clientX,y:t.clientY}:{x:(e&&e.clientX)||0,y:(e&&e.clientY)||0}; }
 function spHoldStart(id,e){
@@ -1256,9 +1257,9 @@ function openTxnModal(id){
     <div class="form-group"><label class="form-label">Notes</label><input type="text" class="form-input" id="m-notes" value="${t.notes||''}"></div>
     <button class="btn btn-primary" onclick="saveTxnEdit('${id}')">💾 Save Changes</button>
     <div style="height:8px"></div>
-    <button class="btn btn-danger" onclick="deleteTxn('${id}')">🗑️ Delete</button>
+    <button class="btn btn-secondary" onclick="closeTxnModal()">✕ Cancel Edit</button>
     <div style="height:8px"></div>
-    <button class="btn btn-secondary" onclick="closeTxnModal()">✕ Cancel edit</button>`;
+    <button class="btn btn-danger" onclick="deleteTxn('${id}')">🗑️ Delete</button>`;
   setToggleVal('m-paidby',t.paidBy==='wife'?'wife':'me');
   setToggleVal('m-purpose',PURPOSES.includes(t.purpose)?t.purpose:'split');
   const box=document.querySelector('#txn-modal .modal-box'); if(box) box.scrollTop=0;
@@ -1354,7 +1355,7 @@ function generateAndShowWA(){
     `📊 *DOLLARWISE — ${ML[mo].toUpperCase()} ${yr}*\n${bar}\n`+
     [line('⚖️ '+st,L.meSplit,false),line('👩 100%',L.meWife100,false),line('🧔 100%',L.meMe100,false),
      line('⚖️ '+st,L.wifeSplit,true),line('🧔 100%',L.wifeMe100,true)].join('\n')+
-    `\n${bar}\n${settle}\n${bar}\n_Generated by DollarWise v1.3.4_`;
+    `\n${bar}\n${settle}\n${bar}\n_Generated by DollarWise v1.3.5_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
@@ -1380,7 +1381,7 @@ function exportAll(){
   if(btn){btn.textContent='Preparing…';btn.disabled=true;}
   try{
     const txns=loadTxns(),settings=loadSettings();
-    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.4',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
+    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.5',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
     const jA=document.createElement('a');jA.href=jUrl;jA.download='DollarWise_Backup_'+dateStr+'.json';jA.click();
     setTimeout(()=>URL.revokeObjectURL(jUrl),1000);
     setTimeout(()=>{
