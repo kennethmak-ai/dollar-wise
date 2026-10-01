@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.3.1</title>
+<title>DollarWise v1.3.2</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -65,9 +65,10 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .toggle-btn.t-me { border-color:rgba(59,130,246,.45); color:var(--blue); }
 .toggle-btn.t-wife { border-color:rgba(244,114,182,.45); color:var(--wife); }
 .toggle-btn.t-split { color:var(--text); }
-.toggle-btn.active-me,.toggle-btn.active-me100 { border-color:var(--blue); background:rgba(59,130,246,.18); color:var(--blue); font-weight:600; }
-.toggle-btn.active-wife,.toggle-btn.active-wife100 { border-color:var(--wife); background:rgba(244,114,182,.18); color:var(--wife); font-weight:600; }
-.toggle-btn.active-split { border-color:var(--muted); background:rgba(200,208,220,.16); color:var(--text); font-weight:600; }
+.toggle-btn.active-me,.toggle-btn.active-me100 { border-color:var(--blue); background:var(--blue); color:#fff; font-weight:600; }
+.toggle-btn.active-wife,.toggle-btn.active-wife100 { border-color:var(--wife); background:var(--wife); color:#fff; font-weight:600; }
+.toggle-btn.active-split { border-color:#6B7280; background:#6B7280; color:#fff; font-weight:600; }
+.toggle-btn.active-citi,.toggle-btn.active-dbs,.toggle-btn.active-ocbc { border-color:var(--accent); background:var(--accent); color:#0D1117; font-weight:600; }
 .toggle-btn .t-emo { font-size:17px; vertical-align:-2px; margin-right:3px; }
 .toggle-btn.mini { flex:0 0 auto; min-width:0; padding:5px 8px; font-size:11px; }
 .toggle-btn.mini .t-emo { font-size:13px; }
@@ -232,7 +233,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.1 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.2 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -313,7 +314,10 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     <div class="month-nav">
       <button class="month-nav-btn" onclick="dashNav(-1)">‹</button>
       <span class="month-nav-label" id="dash-month-label">—</span>
-      <button class="month-nav-btn" onclick="dashNav(1)">›</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="month-nav-btn" onclick="dashNav(1)">›</button>
+        <button class="btn btn-primary btn-sm" style="height:36px;padding:0 12px" onclick="dashThisMonth()">This month</button>
+      </div>
     </div>
     <div class="dash-top" id="dash-top"></div>
     <div class="card"><div class="card-title">📊 TOP CATEGORIES</div><div id="dash-bars"></div></div>
@@ -337,7 +341,10 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
       <div class="filter-chip"        data-val="cc"        onclick="setSpFilter(this)">💳 CC</div>
     </div>
     <div id="sp-total-row"></div>
-    <div id="sp-select-hint" style="display:none" class="select-mode-hint">✅ Select mode — tap rows to select, hold to deselect all</div>
+    <div id="sp-select-hint" style="display:none;align-items:center;justify-content:space-between;gap:8px;text-align:left" class="select-mode-hint">
+      <span>✅ Select mode — tap rows to select</span>
+      <button class="btn btn-secondary btn-sm" style="padding:6px 12px;flex-shrink:0" onclick="exitSelectMode()">✕ Cancel edit</button>
+    </div>
     <div id="sp-select-all-row" style="display:none" class="select-all-row">
       <input type="checkbox" class="sp-checkbox" id="sp-select-all" onchange="toggleSelectAll(this.checked)">
       <span class="select-all-label" id="sp-select-all-label">Select All</span>
@@ -379,7 +386,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
         <div class="form-group">
           <label class="form-label">Bank</label>
           <div class="toggle-group" id="cc-bank">
-            <button class="toggle-btn active-me" data-val="citi" onclick="setToggle('cc-bank',this)">Citi</button>
+            <button class="toggle-btn active-citi" data-val="citi" onclick="setToggle('cc-bank',this)">Citi</button>
             <button class="toggle-btn" data-val="dbs"  onclick="setToggle('cc-bank',this)">DBS</button>
             <button class="toggle-btn" data-val="ocbc" onclick="setToggle('cc-bank',this)">OCBC</button>
           </div>
@@ -508,7 +515,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.1</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.2</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -569,6 +576,8 @@ function toggleTheme() {
 })();
 
 // ── CHANGELOG ─────────────────────────────────────────────────────────────────
+// v1.3.2  Spending: 2-second hold (cancelled on scroll) to enter select mode, Cancel edit button;
+//         Dashboard: This month button; selected Paid By / Purpose / Bank buttons shown solid-filled.
 // v1.3.1  Add tab: ‹ previous day and Today buttons; CC scans default to ⚖️ 50/50;
 //         statement scanning switched from Gemini to OpenAI gpt-4o (photos and PDFs).
 // v1.3.0  New Paid By (🧔 Me / 👩 Wife) and Purpose (⚖️ 50/50 · 👩 100% · 🧔 100%) buttons;
@@ -999,6 +1008,7 @@ const fmtNeg=n=>'−$'+Math.abs(n).toFixed(2);
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 let dashDate=new Date();
 function dashNav(dir){dashDate=new Date(dashDate.getFullYear(),dashDate.getMonth()+dir,1);renderDashboard();}
+function dashThisMonth(){dashDate=new Date();renderDashboard();}
 function toggleBreakdown(){
   const b=document.getElementById('dash-breakdown'), t=document.getElementById('bd-toggle');
   const open=b.style.display!=='none';
@@ -1073,7 +1083,7 @@ function paidByBadge(v){ return v==='wife'?'<span class="badge badge-wife100">�
 
 function enterSelectMode(firstId){
   selectMode=true; selectedIds=new Set([firstId]);
-  document.getElementById('sp-select-hint').style.display='block';
+  document.getElementById('sp-select-hint').style.display='flex';
   document.getElementById('sp-select-all-row').style.display='flex';
   document.getElementById('sp-select-bar').style.display='flex';
   renderSpendingRows(); updateDeleteBtn();
@@ -1144,9 +1154,11 @@ function renderSpendingRows(){
         const isSel=selectedIds.has(t.id);
         return`<div class="txn-row${isSel?' selected':''}" id="sprow-${t.id}"
           ontouchstart="spHoldStart('${t.id}',event)"
+          ontouchmove="spHoldMove(event)"
           ontouchend="spHoldEnd()"
           ontouchcancel="spHoldEnd()"
           onmousedown="spHoldStart('${t.id}',event)"
+          onmousemove="spHoldMove(event)"
           onmouseup="spHoldEnd()"
           onmouseleave="spHoldEnd()"
           onclick="spRowClick('${t.id}')">
@@ -1167,19 +1179,32 @@ function renderSpendingRows(){
 }
 
 // Hold-to-select handlers
-let _holdTimer=null;
+// Hold 2 s to enter select mode. Moving the finger more than 10px (scrolling) cancels the hold.
+const HOLD_MS=2000, HOLD_MOVE_PX=10;
+let _holdTimer=null, _holdX=0, _holdY=0, _holdFired=false, _lastTouch=0;
+function _pt(e){ const t=e&&e.touches&&e.touches[0]; return t?{x:t.clientX,y:t.clientY}:{x:(e&&e.clientX)||0,y:(e&&e.clientY)||0}; }
 function spHoldStart(id,e){
+  if(e&&e.type==='touchstart') _lastTouch=Date.now();
+  else if(Date.now()-_lastTouch<1000) return; // ignore mouse events emulated after a touch
+  spHoldEnd(); _holdFired=false;
+  const p=_pt(e); _holdX=p.x; _holdY=p.y;
   _holdTimer=setTimeout(()=>{
-    _holdTimer=null;
+    _holdTimer=null; _holdFired=true;
     if(!selectMode) enterSelectMode(id);
     else toggleSelectId(id);
-  },500);
+  },HOLD_MS);
+}
+function spHoldMove(e){
+  if(!_holdTimer) return;
+  const p=_pt(e);
+  if(Math.abs(p.x-_holdX)>HOLD_MOVE_PX||Math.abs(p.y-_holdY)>HOLD_MOVE_PX) spHoldEnd();
 }
 function spHoldEnd(){
   if(_holdTimer){clearTimeout(_holdTimer);_holdTimer=null;}
 }
 function spRowClick(id){
   if(_holdTimer){clearTimeout(_holdTimer);_holdTimer=null;} // was a tap not a hold
+  if(_holdFired){ _holdFired=false; return; } // click that ends a completed hold
   if(selectMode){ toggleSelectId(id); return; }
   openTxnModal(id);
 }
@@ -1292,7 +1317,7 @@ function generateAndShowWA(){
     `📊 *DOLLARWISE — ${ML[mo].toUpperCase()} ${yr}*\n${bar}\n`+
     [line('⚖️ '+st,L.meSplit,false),line('👩 100%',L.meWife100,false),line('🧔 100%',L.meMe100,false),
      line('⚖️ '+st,L.wifeSplit,true),line('🧔 100%',L.wifeMe100,true)].join('\n')+
-    `\n${bar}\n${settle}\n${bar}\n_Generated by DollarWise v1.3.1_`;
+    `\n${bar}\n${settle}\n${bar}\n_Generated by DollarWise v1.3.2_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
@@ -1318,7 +1343,7 @@ function exportAll(){
   if(btn){btn.textContent='Preparing…';btn.disabled=true;}
   try{
     const txns=loadTxns(),settings=loadSettings();
-    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.1',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
+    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.2',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
     const jA=document.createElement('a');jA.href=jUrl;jA.download='DollarWise_Backup_'+dateStr+'.json';jA.click();
     setTimeout(()=>URL.revokeObjectURL(jUrl),1000);
     setTimeout(()=>{
