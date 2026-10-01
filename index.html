@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.2.11</title>
+<title>DollarWise v1.3.1</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -49,7 +49,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .theme-toggle { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:5px 11px; font-size:11px; color:var(--muted); cursor:pointer; white-space:nowrap; flex-shrink:0; font-family:'DM Sans',sans-serif; }
 .bottom-nav { height:var(--nav-h); background:var(--surface); border-top:1px solid var(--border); display:flex; flex-shrink:0; z-index:100; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
 .bottom-nav::-webkit-scrollbar { display:none; }
-.nav-btn { flex:0 0 64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:9px; color:var(--muted); cursor:pointer; border:none; background:none; padding:4px 2px; white-space:nowrap; transition:color .2s; }
+.nav-btn { flex:1 1 0; min-width:64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:9px; color:var(--muted); cursor:pointer; border:none; background:none; padding:4px 2px; white-space:nowrap; transition:color .2s; }
 .nav-btn .nav-icon { font-size:20px; line-height:1; }
 .nav-btn.active { color:var(--accent); }
 .card { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:14px; margin-bottom:12px; }
@@ -62,12 +62,28 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 .amount-input::placeholder { color:var(--border); }
 .toggle-group { display:flex; gap:6px; flex-wrap:wrap; }
 .toggle-btn { flex:1; min-width:60px; padding:9px 6px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:12px; font-family:'DM Sans',sans-serif; cursor:pointer; text-align:center; transition:all .15s; }
-.toggle-btn.active-me,.toggle-btn.active-personal { border-color:var(--blue); background:rgba(59,130,246,.15); color:var(--blue); }
-.toggle-btn.active-wife,.toggle-btn.active-wifeonly { border-color:var(--wife); background:rgba(244,114,182,.15); color:var(--wife); }
-.toggle-btn.active-joint,.toggle-btn.active-home { border-color:var(--accent); background:rgba(0,212,170,.15); color:var(--accent); }
-.toggle-btn.active-nosplit { border-color:var(--warn); background:rgba(245,158,11,.15); color:var(--warn); }
-.toggle-btn.active-fullbear { border-color:#EC4899; background:rgba(236,72,153,.15); color:#EC4899; }
-.badge-fullbear { background:rgba(236,72,153,.15); color:#EC4899; }
+.toggle-btn.t-me { border-color:rgba(59,130,246,.45); color:var(--blue); }
+.toggle-btn.t-wife { border-color:rgba(244,114,182,.45); color:var(--wife); }
+.toggle-btn.t-split { color:var(--text); }
+.toggle-btn.active-me,.toggle-btn.active-me100 { border-color:var(--blue); background:rgba(59,130,246,.18); color:var(--blue); font-weight:600; }
+.toggle-btn.active-wife,.toggle-btn.active-wife100 { border-color:var(--wife); background:rgba(244,114,182,.18); color:var(--wife); font-weight:600; }
+.toggle-btn.active-split { border-color:var(--muted); background:rgba(200,208,220,.16); color:var(--text); font-weight:600; }
+.toggle-btn .t-emo { font-size:17px; vertical-align:-2px; margin-right:3px; }
+.toggle-btn.mini { flex:0 0 auto; min-width:0; padding:5px 8px; font-size:11px; }
+.toggle-btn.mini .t-emo { font-size:13px; }
+.badge-split   { background:rgba(200,208,220,.15); color:var(--text); }
+.badge-wife100 { background:rgba(244,114,182,.15); color:var(--wife); }
+.badge-me100   { background:rgba(59,130,246,.15); color:var(--blue); }
+.dash-top { display:flex; justify-content:space-between; align-items:flex-end; background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:14px; margin-bottom:12px; gap:10px; }
+.dash-top-label { font-size:12px; color:var(--muted); }
+.dash-top-val { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; margin-top:2px; }
+.dash-top-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.bd-toggle { font-size:13px; color:var(--muted); cursor:pointer; user-select:none; }
+.bd-row { display:flex; justify-content:space-between; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.bd-row:last-child { border-bottom:none; }
+.bd-pos { color:var(--accent); font-family:'Space Mono',monospace; white-space:nowrap; }
+.bd-neg { color:var(--danger); font-family:'Space Mono',monospace; white-space:nowrap; }
+.bd-total { font-weight:600; }
 .cat-chips { display:flex; flex-wrap:wrap; gap:7px; }
 .cat-chip { padding:7px 12px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:12px; cursor:pointer; transition:all .15s; white-space:nowrap; }
 .cat-chip.selected { border-color:var(--accent); background:rgba(0,212,170,.15); color:var(--accent); }
@@ -216,7 +232,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.2.11 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.1 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -229,7 +245,11 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     <div class="card">
       <div class="form-group">
         <label class="form-label">📅 Date</label>
-        <input type="date" id="qa-date" class="form-input">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="month-nav-btn" style="flex-shrink:0;width:44px;height:44px" onclick="shiftQaDate(-1)" aria-label="Previous day">‹</button>
+          <input type="date" id="qa-date" class="form-input" style="flex:1;min-width:0">
+          <button class="btn btn-primary btn-sm" style="flex-shrink:0;height:44px" onclick="setQaToday()">Today</button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">💰 Amount (SGD)</label>
@@ -241,18 +261,16 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
       <div class="form-group">
         <label class="form-label">👤 Paid By</label>
         <div class="toggle-group" id="qa-paidby">
-          <button class="toggle-btn active-me"  data-val="me"   onclick="setToggle('qa-paidby',this)">Me</button>
-          <button class="toggle-btn"             data-val="wife" onclick="setToggle('qa-paidby',this)">Wife</button>
+          <button class="toggle-btn t-me active-me" data-val="me"   onclick="setToggle('qa-paidby',this)"><span class="t-emo">🧔</span>Me</button>
+          <button class="toggle-btn t-wife"         data-val="wife" onclick="setToggle('qa-paidby',this)"><span class="t-emo">👩</span>Wife</button>
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">🏷️ Purpose</label>
         <div class="toggle-group" id="qa-purpose">
-          <button class="toggle-btn active-home"  data-val="home"      onclick="setToggle('qa-purpose',this)">🏠 Home</button>
-          <button class="toggle-btn"              data-val="personal"  onclick="setToggle('qa-purpose',this)">👤 Personal</button>
-          <button class="toggle-btn"              data-val="wifeonly"  onclick="setToggle('qa-purpose',this)">💜 Wife Only</button>
-          <button class="toggle-btn"              data-val="nosplit"   onclick="setToggle('qa-purpose',this)">🚫 No Split</button>
-          <button class="toggle-btn"              data-val="fullbear"  onclick="setToggle('qa-purpose',this)">💯 Full Bear</button>
+          <button class="toggle-btn t-split active-split" data-val="split"   onclick="setToggle('qa-purpose',this)"><span class="t-emo">⚖️</span>50/50</button>
+          <button class="toggle-btn t-wife"               data-val="wife100" onclick="setToggle('qa-purpose',this)"><span class="t-emo">👩</span>100%</button>
+          <button class="toggle-btn t-me"                 data-val="me100"   onclick="setToggle('qa-purpose',this)"><span class="t-emo">🧔</span>100%</button>
         </div>
       </div>
       <div class="form-group">
@@ -297,9 +315,13 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
       <span class="month-nav-label" id="dash-month-label">—</span>
       <button class="month-nav-btn" onclick="dashNav(1)">›</button>
     </div>
-    <div class="kpi-grid" id="dash-kpis"></div>
-    <div class="split-panel" id="dash-split"></div>
-    <div class="card"><div class="card-title">📊 SPEND BY CATEGORY</div><div id="dash-bars"></div></div>
+    <div class="dash-top" id="dash-top"></div>
+    <div class="card"><div class="card-title">📊 TOP CATEGORIES</div><div id="dash-bars"></div></div>
+    <div class="card">
+      <div class="bd-toggle" id="bd-toggle" onclick="toggleBreakdown()">See breakdown ▾</div>
+      <div id="dash-breakdown" style="display:none;margin-top:8px"></div>
+    </div>
+    <div style="margin-bottom:16px"><button class="btn btn-secondary" onclick="openWAModal()">📱 WhatsApp summary</button></div>
   </div>
 
   <!-- SPENDING -->
@@ -308,11 +330,9 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     <div class="month-chips" id="sp-months"></div>
     <div class="filter-row">
       <div class="filter-chip active" data-val="all"       onclick="setSpFilter(this)">All</div>
-      <div class="filter-chip"        data-val="home"      onclick="setSpFilter(this)">🏠 Home</div>
-      <div class="filter-chip"        data-val="personal"  onclick="setSpFilter(this)">👤 Personal</div>
-      <div class="filter-chip"        data-val="wifeonly"  onclick="setSpFilter(this)">💜 Wife Only</div>
-      <div class="filter-chip"        data-val="nosplit"   onclick="setSpFilter(this)">🚫 No Split</div>
-      <div class="filter-chip"        data-val="fullbear"  onclick="setSpFilter(this)">💯 Full Bear</div>
+      <div class="filter-chip"        data-val="split"     onclick="setSpFilter(this)">⚖️ 50/50</div>
+      <div class="filter-chip"        data-val="wife100"   onclick="setSpFilter(this)">👩 100%</div>
+      <div class="filter-chip"        data-val="me100"     onclick="setSpFilter(this)">🧔 100%</div>
       <div class="filter-chip"        data-val="cash"      onclick="setSpFilter(this)">💵 Cash</div>
       <div class="filter-chip"        data-val="cc"        onclick="setSpFilter(this)">💳 CC</div>
     </div>
@@ -353,7 +373,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
         <div class="card-title">💳 CC STATEMENT SCAN</div>
         <!-- API key warning -->
         <div id="cc-key-warning" style="display:none" class="api-key-warning">
-          ⚠️ Gemini API key not set. <a onclick="switchScreen('screen-settings',document.getElementById('nav-settings'));renderSettings()">Go to Settings to add your key →</a>
+          ⚠️ OpenAI API key not set. <a onclick="switchScreen('screen-settings',document.getElementById('nav-settings'));renderSettings()">Go to Settings to add your key →</a>
         </div>
         <!-- Bank selector -->
         <div class="form-group">
@@ -391,7 +411,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
         <div class="scan-status">
           <div class="scan-spinner">🔍</div>
           <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);margin-bottom:6px">SCANNING STATEMENT</div>
-          <div class="scan-status-msg">Gemini AI is reading your statement…<br>This takes about 5–10 seconds.</div>
+          <div class="scan-status-msg">Reading your statement…<br>This takes about 10–30 seconds.</div>
         </div>
       </div>
     </div>
@@ -424,16 +444,6 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
   </div>
 
-  <!-- SUMMARY -->
-  <div class="screen" id="screen-summary">
-    <div class="month-nav">
-      <button class="month-nav-btn" onclick="sumNav(-1)">‹</button>
-      <span class="month-nav-label" id="sum-month-label">—</span>
-      <button class="month-nav-btn" onclick="sumNav(1)">›</button>
-    </div>
-    <div id="sum-content"></div>
-  </div>
-
   <!-- SETTINGS -->
   <div class="screen" id="screen-settings">
     <div class="card">
@@ -461,19 +471,19 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
       <div id="kw-list"></div>
     </div>
     <div class="card">
-      <div class="card-title">🤖 AI SCANNING (GEMINI)</div>
+      <div class="card-title">🤖 AI SCANNING (OPENAI)</div>
       <div class="settings-row">
         <div>
-          <div class="settings-label">Gemini API Key</div>
+          <div class="settings-label">OpenAI API Key</div>
           <div class="settings-sub">Required for CC statement scanning</div>
         </div>
       </div>
-      <input type="password" id="set-gemini-key" class="form-input" style="margin-top:8px;font-family:'Space Mono',monospace;font-size:12px" placeholder="Paste your Gemini API key here" oninput="saveGeminiKey()">
+      <input type="password" id="set-openai-key" class="form-input" style="margin-top:8px;font-family:'Space Mono',monospace;font-size:12px" placeholder="Paste your OpenAI API key here (sk-…)" oninput="saveApiKey()">
       <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
         <span style="font-size:11px;color:var(--muted)">Saved locally · never uploaded to GitHub</span>
-        <span id="gemini-key-status" style="font-size:11px"></span>
+        <span id="api-key-status" style="font-size:11px"></span>
       </div>
-      <div style="margin-top:8px;font-size:11px;color:var(--muted)">Get a free key at <span style="color:var(--accent)">aistudio.google.com</span> → Get API key</div>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted)">Get a key at <span style="color:var(--accent)">platform.openai.com</span> → API keys · charged per scan</div>
     </div>
     <div class="card">
       <div class="card-title">📤 EXPORT & BACKUP</div>
@@ -498,7 +508,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.2.11</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.1</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -513,7 +523,6 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     <button class="nav-btn active" id="nav-add"      onclick="switchScreen('screen-add',this)">            <span class="nav-icon">➕</span>Add</button>
     <button class="nav-btn"        id="nav-dashboard" onclick="switchScreen('screen-dashboard',this);renderDashboard()"><span class="nav-icon">📊</span>Dashboard</button>
     <button class="nav-btn"        id="nav-spending"  onclick="switchScreen('screen-spending',this);renderSpending()"> <span class="nav-icon">🧾</span>Spending</button>
-    <button class="nav-btn"        id="nav-summary"   onclick="switchScreen('screen-summary',this);renderSummary()">  <span class="nav-icon">📈</span>Summary</button>
     <button class="nav-btn"        id="nav-cc"        onclick="switchScreen('screen-cc',this);initCCScreen()">           <span class="nav-icon">💳</span>CC Import</button>
     <button class="nav-btn"        id="nav-settings"  onclick="switchScreen('screen-settings',this);renderSettings()"><span class="nav-icon">⚙️</span>Settings</button>
     <div style="flex:0 0 8px"></div>
@@ -559,6 +568,14 @@ function toggleTheme() {
   } catch{}
 })();
 
+// ── CHANGELOG ─────────────────────────────────────────────────────────────────
+// v1.3.1  Add tab: ‹ previous day and Today buttons; CC scans default to ⚖️ 50/50;
+//         statement scanning switched from Gemini to OpenAI gpt-4o (photos and PDFs).
+// v1.3.0  New Paid By (🧔 Me / 👩 Wife) and Purpose (⚖️ 50/50 · 👩 100% · 🧔 100%) buttons;
+//         simplified Dashboard with breakdown; Summary tab merged into Dashboard;
+//         one-time migration: CC transactions erased, cash entries set to Me + 👩 100%.
+// v1.2.11 Previous release.
+
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const STORE_KEY='dollarwise_txns_v100', SETTINGS_KEY='dollarwise_settings_v100';
 
@@ -592,6 +609,28 @@ function loadSettings(){
 }
 function saveSettings(s){ localStorage.setItem(SETTINGS_KEY,JSON.stringify(s)); }
 
+// ── PURPOSE (who bears the cost) ──────────────────────────────────────────────
+const PURPOSES=['split','wife100','me100'];
+function splitPct(settings){ const v=parseFloat(settings&&settings.splitMe); return isFinite(v)?Math.min(100,Math.max(0,v)):50; }
+function splitText(settings){ const sp=Math.round(splitPct(settings)); return sp+'/'+(100-sp); }
+function purposeLabel(p){ return p==='split'?splitText(loadSettings()):p==='wife100'?'Wife 100%':p==='me100'?'Me 100%':(p||''); }
+function purposeEmoji(p){ return p==='split'?'⚖️':p==='wife100'?'👩':p==='me100'?'🧔':''; }
+function paidByLabel(v){ return v==='wife'?'Wife':'Me'; }
+
+// ── ONE-TIME MIGRATION v1.3.0 ─────────────────────────────────────────────────
+// Erases all CC transactions and pending CC scans; sets every remaining (cash)
+// entry to Paid By Me + Purpose 👩 100%. Runs once only.
+const MIGRATION_KEY='dw_migrated_v130';
+function migrateV130(){
+  try{
+    if(localStorage.getItem(MIGRATION_KEY)) return;
+    const kept=loadTxns().filter(t=>t.source!=='cc').map(t=>({...t,paidBy:'me',purpose:'wife100'}));
+    saveTxns(kept);
+    localStorage.removeItem('dw_cc_pending');
+    localStorage.setItem(MIGRATION_KEY,new Date().toISOString());
+  }catch(e){ console.error('Migration failed',e); }
+}
+
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
 const CAT_META={
   food:{icon:'🍽️',label:'Dining'},meal:{icon:'🥘',label:'Meal'},groceries:{icon:'🛒',label:'Groceries'},
@@ -620,9 +659,12 @@ function switchScreen(id,btn){
   if(btn) btn.classList.add('active');
 }
 function setToggle(gId,btn){
-  document.getElementById(gId).querySelectorAll('.toggle-btn').forEach(b=>b.className='toggle-btn');
-  btn.className='toggle-btn active-'+btn.dataset.val;
+  document.getElementById(gId).querySelectorAll('.toggle-btn').forEach(b=>{
+    [...b.classList].filter(c=>c.startsWith('active-')).forEach(c=>b.classList.remove(c));
+  });
+  btn.classList.add('active-'+btn.dataset.val);
 }
+function setToggleVal(gId,val){ const b=document.querySelector('#'+gId+' .toggle-btn[data-val="'+val+'"]'); if(b) setToggle(gId,b); }
 function getToggleVal(gId){ const a=document.querySelector('#'+gId+' .toggle-btn[class*="active-"]'); return a?a.dataset.val:null; }
 function selectCat(chip){ document.querySelectorAll('#qa-category .cat-chip').forEach(c=>c.classList.remove('selected')); chip.classList.add('selected'); }
 const fmt=n=>'$'+parseFloat(n||0).toFixed(2);
@@ -631,19 +673,24 @@ const fmtDate=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+
 const todayStr=()=>fmtDate(new Date());
 
 // ── QUICK ADD ─────────────────────────────────────────────────────────────────
+function shiftQaDate(days){
+  const el=document.getElementById('qa-date');
+  const d=el.value?new Date(el.value+'T00:00:00'):new Date();
+  d.setDate(d.getDate()+days);
+  el.value=fmtDate(d);
+}
+function setQaToday(){ document.getElementById('qa-date').value=todayStr(); }
 function clearQuickAdd(){
   ['qa-amount','qa-merchant','qa-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('qa-paidby').querySelectorAll('.toggle-btn').forEach(b=>b.className='toggle-btn');
-  document.querySelector('#qa-paidby [data-val="me"]').className='toggle-btn active-me';
-  document.getElementById('qa-purpose').querySelectorAll('.toggle-btn').forEach(b=>b.className='toggle-btn');
-  document.querySelector('#qa-purpose [data-val="home"]').className='toggle-btn active-home';
+  setToggleVal('qa-paidby','me');
+  setToggleVal('qa-purpose','split');
   document.querySelectorAll('#qa-category .cat-chip').forEach(c=>c.classList.remove('selected'));
 }
 function saveQuickAdd(){
   const amount=parseFloat(document.getElementById('qa-amount').value);
   if(!amount||amount<=0){showToast('⚠️ Enter a valid amount',true);return;}
   const paidBy=getToggleVal('qa-paidby')||'me';
-  const purpose=getToggleVal('qa-purpose')||'home';
+  const purpose=getToggleVal('qa-purpose')||'split';
   const catEl=document.querySelector('#qa-category .cat-chip.selected');
   const txn={
     id:'txn_'+Date.now(), date:document.getElementById('qa-date').value||todayStr(),
@@ -660,15 +707,15 @@ function saveQuickAdd(){
   document.getElementById('qa-amount').focus();
 }
 
-// ── CC SCAN (Gemini AI) ───────────────────────────────────────────────────────
-const GEMINI_KEY_STORE='dw_gemini_key';
+// ── CC SCAN (OpenAI gpt-4o) ───────────────────────────────────────────────────
+const API_KEY_STORE='dw_openai_key';
 const CC_PENDING_KEY='dw_cc_pending'; // localStorage key for pending review data
 
-function getGeminiKey(){ return localStorage.getItem(GEMINI_KEY_STORE)||''; }
-function saveGeminiKey(){
-  const val=document.getElementById('set-gemini-key').value.trim();
-  localStorage.setItem(GEMINI_KEY_STORE,val);
-  const st=document.getElementById('gemini-key-status');
+function getApiKey(){ return localStorage.getItem(API_KEY_STORE)||''; }
+function saveApiKey(){
+  const val=document.getElementById('set-openai-key').value.trim();
+  localStorage.setItem(API_KEY_STORE,val);
+  const st=document.getElementById('api-key-status');
   if(val){st.textContent='✅ Key saved';st.style.color='var(--accent)';}
   else{st.textContent='';}
 }
@@ -720,7 +767,7 @@ function initCCScreen(){
   }
   // Always check key warning
   const warn=document.getElementById('cc-key-warning');
-  if(warn) warn.style.display=getGeminiKey()?'none':'block';
+  if(warn) warn.style.display=getApiKey()?'none':'block';
 }
 
 function resumePendingReview(){
@@ -744,15 +791,15 @@ function discardPending(){
 }
 
 function triggerCamera(){
-  if(!checkGeminiKey()) return;
+  if(!checkApiKey()) return;
   document.getElementById('cc-camera-input').click();
 }
 function triggerFilePicker(){
-  if(!checkGeminiKey()) return;
+  if(!checkApiKey()) return;
   document.getElementById('cc-file-input').click();
 }
-function checkGeminiKey(){
-  const key=getGeminiKey();
+function checkApiKey(){
+  const key=getApiKey();
   const warn=document.getElementById('cc-key-warning');
   if(!key){ warn.style.display='block'; return false; }
   warn.style.display='none'; return true;
@@ -766,12 +813,12 @@ function handleFileSelected(input){
     reader.onload=e=>{ preview.src=e.target.result; preview.style.display='block'; };
     reader.readAsDataURL(file);
   } else { preview.style.display='none'; }
-  scanWithGemini(file);
+  scanStatement(file);
 }
 
-async function scanWithGemini(file){
+async function scanStatement(file){
   goCCStep(1.5);
-  const key=getGeminiKey();
+  const key=getApiKey();
   const bankBtn=document.querySelector('#cc-bank .toggle-btn[class*="active-"]');
   const bank=bankBtn?bankBtn.dataset.val:'citi';
   const settings=loadSettings();
@@ -793,20 +840,24 @@ Rules:
 - If date is unclear use "${todayStr()}"
 - Return empty transactions array if nothing found`;
 
-    const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,{
+    const filePart=mimeType==='application/pdf'
+      ?{type:'file',file:{filename:file.name||'statement.pdf',file_data:`data:application/pdf;base64,${base64}`}}
+      :{type:'image_url',image_url:{url:`data:${mimeType};base64,${base64}`,detail:'high'}};
+    const response=await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
       body:JSON.stringify({
-        contents:[{parts:[
-          {inline_data:{mime_type:mimeType,data:base64}},
-          {text:prompt}
-        ]}],
-        generationConfig:{temperature:0.1}
+        model:'gpt-4o',
+        max_tokens:4000,
+        temperature:0.1,
+        response_format:{type:'json_object'},
+        messages:[{role:'user',content:[{type:'text',text:prompt},filePart]}]
       })
     });
-    const data=await response.json();
-    if(data.error){ throw new Error(data.error.message||'Gemini API error'); }
-    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    let data;
+    try{ data=await response.json(); }catch{ throw new Error('Unreadable reply (HTTP '+response.status+')'); }
+    if(data.error||!response.ok){ throw new Error((data.error&&data.error.message)||('OpenAI error (HTTP '+response.status+')')); }
+    const raw=data.choices?.[0]?.message?.content||'';
     let cleaned=raw.replace(/```json|```/g,'').trim();
     const match=cleaned.match(/\{[\s\S]*\}/);
     if(!match) throw new Error('No JSON found in response');
@@ -819,10 +870,9 @@ Rules:
       merchant:(t.description||'Unknown').trim(),
       amount:parseFloat(t.amount)||0,
       category:autoCategory(t.description||'',settings.kwRules),
-      purpose:'home', paidBy:'me', source:'cc', ccBank:bank, notes:'',
+      purpose:'split', paidBy:'me', source:'cc', ccBank:bank, notes:'',
       createdAt:new Date().toISOString()
     })).filter(t=>t.amount>0);
-    ccParsed.forEach(t=>{ if(['petrol','entertainment','shopping'].includes(t.category)) t.purpose='personal'; });
     if(!ccParsed.length){ showToast('⚠️ No valid transactions extracted',true); goCCStep(1); return; }
     // Save to localStorage immediately — persists across navigation and app close
     savePending();
@@ -878,14 +928,17 @@ function renderCCReview(){
       <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${t.date||''}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <select class="cc-mini-select" onchange="ccParsed[${i}].category=this.value;savePending()">${catOptions}</select>
-        <select class="cc-mini-select" onchange="ccParsed[${i}].purpose=this.value;savePending()">
-          <option value="home">🏠 Home</option><option value="personal">👤 Personal</option>
-          <option value="wifeonly">💜 Wife Only</option><option value="nosplit">🚫 No Split</option>
-          <option value="fullbear">💯 Full Bear</option>
-        </select>
-        <select class="cc-mini-select" onchange="ccParsed[${i}].paidBy=this.value;savePending()">
-          <option value="me">Me</option><option value="wife">Wife</option>
-        </select>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center">
+        <div class="toggle-group" id="ccpb-${i}" style="flex-wrap:nowrap">
+          <button class="toggle-btn mini t-me"   data-val="me"   onclick="setToggle('ccpb-${i}',this);ccParsed[${i}].paidBy='me';savePending()"><span class="t-emo">🧔</span>Me</button>
+          <button class="toggle-btn mini t-wife" data-val="wife" onclick="setToggle('ccpb-${i}',this);ccParsed[${i}].paidBy='wife';savePending()"><span class="t-emo">👩</span>Wife</button>
+        </div>
+        <div class="toggle-group" id="ccpu-${i}" style="flex-wrap:nowrap">
+          <button class="toggle-btn mini t-split" data-val="split"   onclick="setToggle('ccpu-${i}',this);ccParsed[${i}].purpose='split';savePending()"><span class="t-emo">⚖️</span>50/50</button>
+          <button class="toggle-btn mini t-wife"  data-val="wife100" onclick="setToggle('ccpu-${i}',this);ccParsed[${i}].purpose='wife100';savePending()"><span class="t-emo">👩</span>100%</button>
+          <button class="toggle-btn mini t-me"    data-val="me100"   onclick="setToggle('ccpu-${i}',this);ccParsed[${i}].purpose='me100';savePending()"><span class="t-emo">🧔</span>100%</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -895,8 +948,10 @@ function renderCCReview(){
     const row=document.getElementById('cc-row-'+i); if(!row) return;
     const s=row.querySelectorAll('.cc-mini-select');
     if(s[0]){ s[0].value=CAT_META[t.category]?t.category:'others'; }
-    if(s[1]){ s[1].value=['home','personal','wifeonly','nosplit','fullbear'].includes(t.purpose)?t.purpose:'home'; }
-    if(s[2]){ s[2].value=t.paidBy==='wife'?'wife':'me'; }
+    if(!PURPOSES.includes(t.purpose)) t.purpose='split';
+    if(t.paidBy!=='wife') t.paidBy='me';
+    setToggleVal('ccpb-'+i,t.paidBy);
+    setToggleVal('ccpu-'+i,t.purpose);
   });
 }
 function removeCCRow(i){
@@ -920,97 +975,76 @@ function importCC(){
 }
 
 // ── SPLIT CALC ────────────────────────────────────────────────────────────────
-// HOME: split by %. FULLBEAR: payer paid, other party bears 100%.
-// Personal / wifeonly / nosplit: excluded from all calculations.
+// +ve = wife owes me, -ve = I owe wife.
+// Me paid:   ⚖️ split → wife owes her share · 👩 100% → wife owes all · 🧔 100% → nothing
+// Wife paid: ⚖️ split → I owe my share       · 🧔 100% → I owe all     · 👩 100% → nothing
 function calcSplit(txns,settings){
-  const pct=(settings.splitMe||50)/100;
-  // Home split
-  const home=txns.filter(t=>t.purpose==='home');
-  const myPaidHome=home.filter(t=>t.paidBy==='me').reduce((s,t)=>s+t.amount,0);
-  const wifePaidHome=home.filter(t=>t.paidBy==='wife').reduce((s,t)=>s+t.amount,0);
-  const totalHome=myPaidHome+wifePaidHome;
-  const myShare=totalHome*pct, wifeShare=totalHome*(1-pct);
-  const homeBalance=myPaidHome-myShare; // +ve = wife owes me, -ve = i owe wife
-  // Full Bear: whoever paid, OTHER party bears 100%
-  const fb=txns.filter(t=>t.purpose==='fullbear');
-  const fbMyPaid=fb.filter(t=>t.paidBy==='me').reduce((s,t)=>s+t.amount,0);   // wife bears this
-  const fbWifePaid=fb.filter(t=>t.paidBy==='wife').reduce((s,t)=>s+t.amount,0); // i bear this
-  const fbBalance=fbMyPaid-fbWifePaid; // +ve = wife owes me fbMyPaid, and i owe wife fbWifePaid → net
-  // Final settlement
-  const finalBalance=homeBalance+fbBalance;
-  return{totalHome,myPaidHome,wifePaidHome,myShare,wifeShare,homeBalance,fbMyPaid,fbWifePaid,fbBalance,finalBalance,pct};
+  const pct=splitPct(settings)/100;
+  const sum=(pb,pu)=>txns.filter(t=>t.paidBy===pb&&t.purpose===pu).reduce((s,t)=>s+(t.amount||0),0);
+  const meSplit=sum('me','split'), meWife100=sum('me','wife100'), meMe100=sum('me','me100');
+  const wifeSplit=sum('wife','split'), wifeMe100=sum('wife','me100');
+  const lines={
+    meSplit:   {paid:meSplit,   val: meSplit*(1-pct)},
+    meWife100: {paid:meWife100, val: meWife100},
+    meMe100:   {paid:meMe100,   val: 0},
+    wifeSplit: {paid:wifeSplit, val:-wifeSplit*pct},
+    wifeMe100: {paid:wifeMe100, val:-wifeMe100},
+  };
+  const finalBalance=Object.values(lines).reduce((s,l)=>s+l.val,0);
+  return{lines,finalBalance,pct};
 }
+const fmtPos=n=>'+$'+Math.abs(n).toFixed(2);
+const fmtNeg=n=>'−$'+Math.abs(n).toFixed(2);
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 let dashDate=new Date();
 function dashNav(dir){dashDate=new Date(dashDate.getFullYear(),dashDate.getMonth()+dir,1);renderDashboard();}
+function toggleBreakdown(){
+  const b=document.getElementById('dash-breakdown'), t=document.getElementById('bd-toggle');
+  const open=b.style.display!=='none';
+  b.style.display=open?'none':'block';
+  t.textContent=open?'See breakdown ▾':'Hide breakdown ▴';
+}
 function renderDashboard(){
   const yr=dashDate.getFullYear(),mo=dashDate.getMonth();
   const ms=yr+'-'+String(mo+1).padStart(2,'0');
   document.getElementById('dash-month-label').textContent=ML[mo]+' '+yr;
   const txns=loadTxns().filter(t=>t.date&&t.date.startsWith(ms));
   const settings=loadSettings();
-  const sp=Math.round((settings.splitMe||50)), sw=100-sp;
-  const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
   const split=calcSplit(txns,settings);
-  const total=txns.reduce((s,t)=>s+t.amount,0);
-  const myPersonal=txns.filter(t=>t.purpose==='personal'&&t.paidBy==='me').reduce((s,t)=>s+t.amount,0);
-  const wifeOnly=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
-  const noSplit=txns.filter(t=>t.purpose==='nosplit').reduce((s,t)=>s+t.amount,0);
-  const fullBearTotal=txns.filter(t=>t.purpose==='fullbear').reduce((s,t)=>s+t.amount,0);
-  const cash=txns.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0);
-  const cc=txns.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0);
+  const total=txns.reduce((s,t)=>s+(t.amount||0),0);
+  const cash=txns.filter(t=>t.source==='cash').reduce((s,t)=>s+(t.amount||0),0);
+  const cc=txns.filter(t=>t.source==='cc').reduce((s,t)=>s+(t.amount||0),0);
+  const fb=split.finalBalance, owesMe=fb>-0.005;
 
-  document.getElementById('dash-kpis').innerHTML=[
-    {l:'💰 Total Spend',v:fmt(total),c:''},
-    {l:'🏠 Home Expenses',v:fmt(split.totalHome),c:'green'},
-    {l:'👤 My Personal',v:fmt(myPersonal),c:'blue'},
-    {l:'💜 Wife Only',v:fmt(wifeOnly),c:'purple'},
-    {l:'🚫 No Split',v:fmt(noSplit),c:'amber'},
-    {l:'💵 Cash / 💳 CC',v:fmt(cash)+' / '+fmt(cc),c:''},
-  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.l}</div><div class="kpi-value">${k.v}</div></div>`).join('');
+  document.getElementById('dash-top').innerHTML=`
+    <div>
+      <div class="dash-top-label">💰 Total spent</div>
+      <div class="dash-top-val">${fmt(total)}</div>
+      <div class="dash-top-sub">💵 ${fmt(cash)} · 💳 ${fmt(cc)}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="dash-top-label">${owesMe?'👩 Wife owes you':'🧔 You owe wife'}</div>
+      <div class="dash-top-val" style="color:${owesMe?'var(--accent)':'var(--danger)'}">${owesMe?fmtPos(fb):fmtNeg(fb)}</div>
+      <div class="dash-top-sub">&nbsp;</div>
+    </div>`;
 
-  // ── Build final settlement box ──
-  function settlementBox(balance, myName, wifeName){
-    if(Math.abs(balance)<0.01) return`<div class="settlement-box settled"><span class="settlement-label settled">✅ Settled</span></div>`;
-    if(balance>0) return`<div class="settlement-box wife-pays"><span class="settlement-label wife-pays">Wife to pay ${myName}</span><span class="settlement-amount wife-pays">${fmt(balance)}</span></div>`;
-    return`<div class="settlement-box hubby-pays"><span class="settlement-label hubby-pays">${myName} to pay Wife</span><span class="settlement-amount hubby-pays">${fmt(Math.abs(balance))}</span></div>`;
-  }
-
-  const showFB = fullBearTotal > 0;
-
-  document.getElementById('dash-split').innerHTML=`
-    <div class="split-title">💰 SETTLEMENT — ${ML[mo].toUpperCase()} ${yr}</div>
-
-    <div class="split-section-title">① HOME SPLIT (${sp}% / ${sw}%)</div>
-    <div class="split-row"><span class="split-row-label">Total Home Expenses</span><span class="split-row-val">${fmt(split.totalHome)}</span></div>
-    <div class="split-row"><span class="split-row-label">${myName} paid</span><span class="split-row-val green">${fmt(split.myPaidHome)}</span></div>
-    <div class="split-row"><span class="split-row-label">${wifeName} paid</span><span class="split-row-val" style="color:var(--wife)">${fmt(split.wifePaidHome)}</span></div>
-    <div class="split-row"><span class="split-row-label">${myName}'s share</span><span class="split-row-val">${fmt(split.myShare)}</span></div>
-    <div class="split-row"><span class="split-row-label">${wifeName}'s share</span><span class="split-row-val">${fmt(split.wifeShare)}</span></div>
-    <div class="split-row"><span class="split-row-label">💜 Wife Only (for wife)</span><span class="split-row-val" style="color:var(--wife)">${fmt(wifeOnly)}</span></div>
-    <div class="split-row"><span class="split-row-label">Home Balance</span><span class="split-row-val ${split.homeBalance>=0?'green':''}" style="${split.homeBalance<0?'color:var(--wife)':''}">${split.homeBalance>=0?'Wife owes '+fmt(split.homeBalance):myName+' owes '+fmt(Math.abs(split.homeBalance))}</span></div>
-
-    ${showFB?`
-    <hr class="split-divider">
-    <div class="split-section-title">② FULL BEAR (100% by other party)</div>
-    <div class="split-row"><span class="split-row-label">${myName} paid → ${wifeName} bears</span><span class="split-row-val green">${fmt(split.fbMyPaid)}</span></div>
-    <div class="split-row"><span class="split-row-label">${wifeName} paid → ${myName} bears</span><span class="split-row-val" style="color:var(--wife)">${fmt(split.fbWifePaid)}</span></div>
-    <div class="split-row"><span class="split-row-label">Full Bear Balance</span><span class="split-row-val ${split.fbBalance>=0?'green':''}" style="${split.fbBalance<0?'color:var(--wife)':''}">${split.fbBalance>=0?'Wife owes '+fmt(split.fbBalance):myName+' owes '+fmt(Math.abs(split.fbBalance))}</span></div>
-    `:''}
-
-    <hr class="split-divider">
-    <div class="split-section-title">③ FINAL SETTLEMENT</div>
-    ${settlementBox(split.finalBalance, myName, wifeName)}
-
-    <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="openWAModal()">📱 WhatsApp Summary</button></div>`;
-
-  const cats={};txns.forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
-  const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
-  const max=sorted.length?sorted[0][1]:1;
-  document.getElementById('dash-bars').innerHTML=sorted.length
-    ?sorted.map(([c,v])=>`<div class="bar-row"><div class="bar-label">${catIcon(c)} ${catLabel(c)}</div><div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%"></div></div><div class="bar-val">${fmt(v)}</div></div>`).join('')
+  const cats={};txns.forEach(t=>{cats[t.category]=(cats[t.category]||0)+(t.amount||0);});
+  const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max=top.length?top[0][1]:1;
+  document.getElementById('dash-bars').innerHTML=top.length
+    ?top.map(([c,v])=>`<div class="bar-row"><div class="bar-label">${catIcon(c)} ${catLabel(c)}</div><div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%"></div></div><div class="bar-val">${fmt(v)}</div></div>`).join('')
     :'<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No transactions this month</div>';
+
+  const st=splitText(settings), L=split.lines;
+  const row=(label,l,neg)=>`<div class="bd-row"><span>${label} · ${neg?'wife':'you'} paid ${fmt(l.paid)}</span><span class="${neg?'bd-neg':'bd-pos'}">${neg?fmtNeg(l.val):fmtPos(l.val)}</span></div>`;
+  document.getElementById('dash-breakdown').innerHTML=
+    row('⚖️ '+st,L.meSplit,false)+
+    row('👩 100%',L.meWife100,false)+
+    row('🧔 100%',L.meMe100,false)+
+    row('⚖️ '+st,L.wifeSplit,true)+
+    row('🧔 100%',L.wifeMe100,true)+
+    `<div class="bd-row bd-total"><span>${owesMe?'Wife owes you':'You owe wife'}</span><span class="${owesMe?'bd-pos':'bd-neg'}">${owesMe?fmtPos(fb):fmtNeg(fb)}</span></div>`;
 }
 
 // ── SPENDING ──────────────────────────────────────────────────────────────────
@@ -1030,12 +1064,12 @@ function setSpMonth(m){spMonth=m;exitSelectMode();renderSpending();}
 function setSpFilter(chip){document.querySelectorAll('#screen-spending .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');spFilter=chip.dataset.val;exitSelectMode();renderSpending();}
 
 function purposeBadge(p){
-  if(p==='home')     return'<span class="badge badge-home">Home</span>';
-  if(p==='wifeonly') return'<span class="badge badge-wife">Wife Only</span>';
-  if(p==='nosplit')  return'<span class="badge badge-nosplit">No Split</span>';
-  if(p==='fullbear') return'<span class="badge badge-fullbear">💯 Full Bear</span>';
-  return'<span class="badge badge-personal">Personal</span>';
+  if(p==='split')   return`<span class="badge badge-split">⚖️ ${splitText(loadSettings())}</span>`;
+  if(p==='wife100') return'<span class="badge badge-wife100">👩 100%</span>';
+  if(p==='me100')   return'<span class="badge badge-me100">🧔 100%</span>';
+  return'<span class="badge">'+(p||'—')+'</span>';
 }
+function paidByBadge(v){ return v==='wife'?'<span class="badge badge-wife100">👩 Wife</span>':'<span class="badge badge-me100">🧔 Me</span>'; }
 
 function enterSelectMode(firstId){
   selectMode=true; selectedIds=new Set([firstId]);
@@ -1083,11 +1117,7 @@ function renderSpending(){
   renderSpMonths();
   const search=(document.getElementById('sp-search').value||'').toLowerCase();
   let txns=loadTxns().filter(t=>t.date&&t.date.startsWith(spMonth));
-  if(spFilter==='home')    txns=txns.filter(t=>t.purpose==='home');
-  else if(spFilter==='personal') txns=txns.filter(t=>t.purpose==='personal');
-  else if(spFilter==='wifeonly') txns=txns.filter(t=>t.purpose==='wifeonly');
-  else if(spFilter==='nosplit')  txns=txns.filter(t=>t.purpose==='nosplit');
-  else if(spFilter==='fullbear') txns=txns.filter(t=>t.purpose==='fullbear');
+  if(PURPOSES.includes(spFilter)) txns=txns.filter(t=>t.purpose===spFilter);
   else if(spFilter==='cash') txns=txns.filter(t=>t.source==='cash');
   else if(spFilter==='cc')   txns=txns.filter(t=>t.source==='cc');
   if(search) txns=txns.filter(t=>(t.merchant||'').toLowerCase().includes(search));
@@ -1123,7 +1153,7 @@ function renderSpendingRows(){
           ${selectMode?`<input type="checkbox" class="sp-checkbox" ${isSel?'checked':''} onclick="event.stopPropagation();toggleSelectId('${t.id}')">`:'' }
           <div class="txn-icon">${catIcon(t.category)}</div>
           <div class="txn-info"><div class="txn-merchant">${t.merchant}</div>
-          <div class="txn-meta">${purposeBadge(t.purpose)}<span class="badge ${t.source==='cc'?'badge-cc':'badge-cash'}">${t.source==='cc'?'CC':'Cash'}</span></div></div>
+          <div class="txn-meta">${paidByBadge(t.paidBy)}${purposeBadge(t.purpose)}<span class="badge ${t.source==='cc'?'badge-cc':'badge-cash'}">${t.source==='cc'?'CC':'Cash'}</span></div></div>
           <div class="txn-amount">${fmt(t.amount)}</div>
         </div>`;
       }).join('')}
@@ -1154,68 +1184,6 @@ function spRowClick(id){
   openTxnModal(id);
 }
 
-// ── SUMMARY ───────────────────────────────────────────────────────────────────
-let sumDate=new Date();
-function sumNav(dir){sumDate=new Date(sumDate.getFullYear(),sumDate.getMonth()+dir,1);renderSummary();}
-function renderSummary(){
-  const yr=sumDate.getFullYear(),mo=sumDate.getMonth();
-  const ms=yr+'-'+String(mo+1).padStart(2,'0');
-  document.getElementById('sum-month-label').textContent=ML[mo]+' '+yr;
-  const allTxns=loadTxns();
-  const txns=allTxns.filter(t=>t.date&&t.date.startsWith(ms));
-  const settings=loadSettings();
-  const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
-  const sp=Math.round(settings.splitMe||50), sw=100-sp;
-  const prevMs=new Date(yr,mo-1,1);
-  const prevStr=prevMs.getFullYear()+'-'+String(prevMs.getMonth()+1).padStart(2,'0');
-  const prevTotal=allTxns.filter(t=>t.date&&t.date.startsWith(prevStr)).reduce((s,t)=>s+t.amount,0);
-  const total=txns.reduce((s,t)=>s+t.amount,0);
-  const cash=txns.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0);
-  const cc=txns.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0);
-  const wifeOnly=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
-  const fullBearTotal=txns.filter(t=>t.purpose==='fullbear').reduce((s,t)=>s+t.amount,0);
-  const trend=prevTotal>0?((total-prevTotal)/prevTotal*100):null;
-  const trendTag=trend!==null?(trend>=0?`<span class="trend-tag trend-up">▲ ${trend.toFixed(1)}%</span>`:`<span class="trend-tag trend-down">▼ ${Math.abs(trend).toFixed(1)}%</span>`):'';
-  const split=calcSplit(txns,settings);
-  // Settlement wording
-  function balStr(bal){ if(Math.abs(bal)<0.01)return'<span class="insight-val green">✅ Settled</span>'; if(bal>0)return`<span class="insight-val green">Wife to pay ${myName} ${fmt(bal)}</span>`; return`<span class="insight-val amber">${myName} to pay Wife ${fmt(Math.abs(bal))}</span>`; }
-  const cats={};txns.forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
-  const top5=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  document.getElementById('sum-content').innerHTML=`
-    <div class="summary-card">
-      <div class="summary-title">📊 MONTH AT A GLANCE</div>
-      <div class="insight-row"><span class="insight-label">Total Spend</span><span class="insight-val">${fmt(total)} ${trendTag}</span></div>
-      <div class="insight-row"><span class="insight-label">Cash</span><span class="insight-val">${fmt(cash)}</span></div>
-      <div class="insight-row"><span class="insight-label">Credit Card</span><span class="insight-val">${fmt(cc)}</span></div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-title">💰 SETTLEMENT — ${ML[mo].toUpperCase()} ${yr}</div>
-      <div class="split-section-title" style="margin-bottom:8px">① HOME SPLIT (${sp}% / ${sw}%)</div>
-      <div class="insight-row"><span class="insight-label">Total Home</span><span class="insight-val green">${fmt(split.totalHome)}</span></div>
-      <div class="insight-row"><span class="insight-label">${myName} paid</span><span class="insight-val">${fmt(split.myPaidHome)}</span></div>
-      <div class="insight-row"><span class="insight-label">${wifeName} paid</span><span class="insight-val" style="color:var(--wife)">${fmt(split.wifePaidHome)}</span></div>
-      <div class="insight-row"><span class="insight-label">💜 Wife Only (for wife)</span><span class="insight-val" style="color:var(--wife)">${fmt(wifeOnly)}</span></div>
-      <div class="insight-row"><span class="insight-label">${myName}'s share</span><span class="insight-val">${fmt(split.myShare)}</span></div>
-      <div class="insight-row"><span class="insight-label">${wifeName}'s share</span><span class="insight-val">${fmt(split.wifeShare)}</span></div>
-      <div class="insight-row"><span class="insight-label">Home Balance</span>${balStr(split.homeBalance)}</div>
-      ${fullBearTotal>0?`
-      <hr class="split-divider" style="margin:10px 0">
-      <div class="split-section-title" style="margin-bottom:8px">② FULL BEAR</div>
-      <div class="insight-row"><span class="insight-label">${myName} paid → ${wifeName} bears</span><span class="insight-val green">${fmt(split.fbMyPaid)}</span></div>
-      <div class="insight-row"><span class="insight-label">${wifeName} paid → ${myName} bears</span><span class="insight-val" style="color:var(--wife)">${fmt(split.fbWifePaid)}</span></div>
-      <div class="insight-row"><span class="insight-label">Full Bear Balance</span>${balStr(split.fbBalance)}</div>
-      `:''}
-      <hr class="split-divider" style="margin:10px 0">
-      <div class="split-section-title" style="margin-bottom:8px">③ FINAL SETTLEMENT</div>
-      <div class="insight-row"><span class="insight-label">Amount</span>${balStr(split.finalBalance)}</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-title">📊 TOP 5 CATEGORIES</div>
-      ${top5.length?top5.map(([c,v])=>`<div class="progress-row"><div class="progress-label"><span>${catIcon(c)} ${catLabel(c)}</span><span>${fmt(v)}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total>0?(v/total*100).toFixed(1):0}%"></div></div></div>`).join(''):'<div style="color:var(--muted);font-size:13px">No data</div>'}
-    </div>
-    <div style="margin-bottom:16px"><button class="btn btn-secondary" onclick="openWAModal()">📱 Generate WhatsApp Summary</button></div>`;
-}
-
 // ── TXN MODAL ─────────────────────────────────────────────────────────────────
 function openTxnModal(id){
   const t=loadTxns().find(t=>t.id===id); if(!t)return;
@@ -1225,29 +1193,29 @@ function openTxnModal(id){
     <div class="form-group"><label class="form-label">Amount ($)</label><input type="number" class="form-input" id="m-amount" value="${t.amount}" step="0.01"></div>
     <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="m-date" value="${t.date}"></div>
     <div class="form-group"><label class="form-label">Category</label><select class="form-input" id="m-cat">${catOpts}</select></div>
-    <div class="form-group"><label class="form-label">Purpose</label>
-      <select class="form-input" id="m-purpose">
-        <option value="home"     ${t.purpose==='home'    ?'selected':''}>🏠 Home</option>
-        <option value="personal" ${t.purpose==='personal'?'selected':''}>👤 Personal</option>
-        <option value="wifeonly" ${t.purpose==='wifeonly'?'selected':''}>💜 Wife Only</option>
-        <option value="nosplit"  ${t.purpose==='nosplit' ?'selected':''}>🚫 No Split</option>
-        <option value="fullbear" ${t.purpose==='fullbear'?'selected':''}>💯 Full Bear</option>
-      </select></div>
     <div class="form-group"><label class="form-label">Paid By</label>
-      <select class="form-input" id="m-paidby">
-        <option value="me"    ${t.paidBy==='me'   ?'selected':''}>Me</option>
-        <option value="wife"  ${t.paidBy==='wife' ?'selected':''}>Wife</option>
-      </select></div>
+      <div class="toggle-group" id="m-paidby">
+        <button class="toggle-btn t-me"   data-val="me"   onclick="setToggle('m-paidby',this)"><span class="t-emo">🧔</span>Me</button>
+        <button class="toggle-btn t-wife" data-val="wife" onclick="setToggle('m-paidby',this)"><span class="t-emo">👩</span>Wife</button>
+      </div></div>
+    <div class="form-group"><label class="form-label">Purpose</label>
+      <div class="toggle-group" id="m-purpose">
+        <button class="toggle-btn t-split" data-val="split"   onclick="setToggle('m-purpose',this)"><span class="t-emo">⚖️</span>${splitText(loadSettings())}</button>
+        <button class="toggle-btn t-wife"  data-val="wife100" onclick="setToggle('m-purpose',this)"><span class="t-emo">👩</span>100%</button>
+        <button class="toggle-btn t-me"    data-val="me100"   onclick="setToggle('m-purpose',this)"><span class="t-emo">🧔</span>100%</button>
+      </div></div>
     <div class="form-group"><label class="form-label">Notes</label><input type="text" class="form-input" id="m-notes" value="${t.notes||''}"></div>
     <button class="btn btn-primary" onclick="saveTxnEdit('${id}')">💾 Save Changes</button>
     <div style="height:8px"></div>
     <button class="btn btn-danger" onclick="deleteTxn('${id}')">🗑️ Delete</button>`;
+  setToggleVal('m-paidby',t.paidBy==='wife'?'wife':'me');
+  setToggleVal('m-purpose',PURPOSES.includes(t.purpose)?t.purpose:'split');
   document.getElementById('txn-modal').classList.add('open');
 }
 function closeTxnModal(e){if(!e||e.target===document.getElementById('txn-modal'))document.getElementById('txn-modal').classList.remove('open');}
 function saveTxnEdit(id){
   const txns=loadTxns(),i=txns.findIndex(t=>t.id===id);if(i<0)return;
-  txns[i]={...txns[i],merchant:document.getElementById('m-merchant').value,amount:parseFloat(document.getElementById('m-amount').value)||0,date:document.getElementById('m-date').value,category:document.getElementById('m-cat').value,purpose:document.getElementById('m-purpose').value,paidBy:document.getElementById('m-paidby').value,notes:document.getElementById('m-notes').value,edited:true};
+  txns[i]={...txns[i],merchant:document.getElementById('m-merchant').value,amount:parseFloat(document.getElementById('m-amount').value)||0,date:document.getElementById('m-date').value,category:document.getElementById('m-cat').value,purpose:getToggleVal('m-purpose')||'split',paidBy:getToggleVal('m-paidby')||'me',notes:document.getElementById('m-notes').value,edited:true};
   saveTxns(txns);closeTxnModal();renderSpending();showToast('✅ Updated');
 }
 function deleteTxn(id){
@@ -1262,11 +1230,11 @@ function renderSettings(){
   document.getElementById('set-wifename').value=s.wifeName||'Wife';
   document.getElementById('set-split').value=s.splitMe||50;
   updateSplitPreview();renderKWRules(s.kwRules||[]);
-  // Load Gemini key
-  const gKey=getGeminiKey();
-  const gField=document.getElementById('set-gemini-key');
+  // Load OpenAI key
+  const gKey=getApiKey();
+  const gField=document.getElementById('set-openai-key');
   if(gField){ gField.value=gKey; }
-  const st=document.getElementById('gemini-key-status');
+  const st=document.getElementById('api-key-status');
   if(st){ if(gKey){st.textContent='✅ Key saved';st.style.color='var(--accent)';}else{st.textContent='';} }
   const txns=loadTxns();
   document.getElementById('info-count').textContent=txns.length;
@@ -1286,6 +1254,7 @@ function saveSettingsForm(){
   s.wifeName=document.getElementById('set-wifename').value;
   s.splitMe=parseInt(document.getElementById('set-split').value)||50;
   saveSettings(s);
+  const qs=document.querySelector('#qa-purpose [data-val="split"]'); if(qs) qs.lastChild.textContent=splitText(s);
 }
 function renderKWRules(rules){
   document.getElementById('kw-list').innerHTML=rules.map(r=>`
@@ -1313,20 +1282,17 @@ function generateAndShowWA(){
   const ms=yr+'-'+String(mo+1).padStart(2,'0');
   const txns=loadTxns().filter(t=>t.date&&t.date.startsWith(ms));
   const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
-  const sp=Math.round(settings.splitMe||50), sw=100-sp;
-  const split=calcSplit(txns,settings);
+  const split=calcSplit(txns,settings), L=split.lines, st=splitText(settings);
   const note=document.getElementById('wa-note').value.trim();
-  const cats={};txns.filter(t=>t.purpose==='home').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
-  const catLines=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`  ${catIcon(c)} ${catLabel(c).padEnd(14)}: $${fmtN(v)}`).join('\n');
-  const wifeOnlyTotal=txns.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0);
-  const wifeOnlyLine=wifeOnlyTotal>0?`\n💜 *WIFE ONLY (for wife)*: $${fmtN(wifeOnlyTotal)}`:'';
-  const fbSection=split.fbMyPaid>0||split.fbWifePaid>0?`\n━━━━━━━━━━━━━━━━━━━━━━\n💯 *② FULL BEAR*\n  ${myName} paid → ${wifeName} bears: $${fmtN(split.fbMyPaid)}\n  ${wifeName} paid → ${myName} bears: $${fmtN(split.fbWifePaid)}\n  Full Bear Balance: ${split.fbBalance>=0?'Wife owes $'+fmtN(split.fbBalance):myName+' owes $'+fmtN(Math.abs(split.fbBalance))}`:'';
-  let settleLine='';
-  if(Math.abs(split.finalBalance)<0.01) settleLine='✅ All settled!';
-  else if(split.finalBalance>0) settleLine=`⚠️ Wife to pay ${myName}: *$${fmtN(split.finalBalance)}*`;
-  else settleLine=`⚠️ ${myName} to pay Wife: *$${fmtN(Math.abs(split.finalBalance))}*`;
-  const notePart=note?`💬 ${note}\n━━━━━━━━━━━━━━━━━━━━━━\n`:'';
-  const text=`${notePart}🏠 *HOME EXPENSES — ${ML[mo].toUpperCase()} ${yr}*\n━━━━━━━━━━━━━━━━━━━━━━\n💰 Total Home: *$${fmtN(split.totalHome)}*${wifeOnlyLine}\n${catLines?'\n📊 *BREAKDOWN*\n'+catLines+'\n':''}\n━━━━━━━━━━━━━━━━━━━━━━\n🏠 *① HOME SPLIT*\n🤝 *SHARE BETWEEN HUBBY AND WIFE*\n  ${myName} paid:    $${fmtN(split.myPaidHome)}\n  ${wifeName} paid:   $${fmtN(split.wifePaidHome)}\n  ${myName}'s share: $${fmtN(split.myShare)}\n  ${wifeName}'s share:$${fmtN(split.wifeShare)}\n  Home Balance: ${split.homeBalance>=0?'Wife owes $'+fmtN(split.homeBalance):myName+' owes $'+fmtN(Math.abs(split.homeBalance))}${fbSection}\n━━━━━━━━━━━━━━━━━━━━━━\n📝 *③ FINAL SETTLEMENT*\n  ${settleLine}\n━━━━━━━━━━━━━━━━━━━━━━\n_Generated by DollarWise v1.2.11_`;
+  const line=(label,l,neg)=>`  ${label} · ${neg?wifeName:myName} paid $${fmtN(l.paid)} → ${neg?fmtNeg(l.val):fmtPos(l.val)}`;
+  const fb=split.finalBalance;
+  const settle=fb>-0.005?`👩 *${wifeName} owes ${myName}: ${fmtPos(fb)}*`:`🧔 *${myName} owes ${wifeName}: ${fmtNeg(fb)}*`;
+  const bar='━━━━━━━━━━━━━━━━━━━━━━';
+  const text=(note?`💬 ${note}\n${bar}\n`:'')+
+    `📊 *DOLLARWISE — ${ML[mo].toUpperCase()} ${yr}*\n${bar}\n`+
+    [line('⚖️ '+st,L.meSplit,false),line('👩 100%',L.meWife100,false),line('🧔 100%',L.meMe100,false),
+     line('⚖️ '+st,L.wifeSplit,true),line('🧔 100%',L.wifeMe100,true)].join('\n')+
+    `\n${bar}\n${settle}\n${bar}\n_Generated by DollarWise v1.3.1_`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
@@ -1340,7 +1306,7 @@ function copyWA(){
 // ── CSV & BACKUP+EXCEL ────────────────────────────────────────────────────────
 function exportCSV(){
   const txns=loadTxns();if(!txns.length){showToast('⚠️ No data',true);return;}
-  const rows=txns.map(t=>[t.date,`"${(t.merchant||'').replace(/"/g,'""')}"`,t.amount,catLabel(t.category),t.purpose,t.paidBy,t.source,t.ccBank||'',`"${(t.notes||'').replace(/"/g,'""')}"`].join(','));
+  const rows=txns.map(t=>[t.date,`"${(t.merchant||'').replace(/"/g,'""')}"`,t.amount,catLabel(t.category),purposeLabel(t.purpose),paidByLabel(t.paidBy),t.source,t.ccBank||'',`"${(t.notes||'').replace(/"/g,'""')}"`].join(','));
   const csv=['Date,Merchant,Amount,Category,Purpose,PaidBy,Source,CC Bank,Notes',...rows].join('\n');
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   const a=document.createElement('a');a.href=url;a.download='DollarWise_CSV_'+todayStr()+'.csv';a.click();URL.revokeObjectURL(url);
@@ -1352,7 +1318,7 @@ function exportAll(){
   if(btn){btn.textContent='Preparing…';btn.disabled=true;}
   try{
     const txns=loadTxns(),settings=loadSettings();
-    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.2.0',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
+    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.1',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
     const jA=document.createElement('a');jA.href=jUrl;jA.download='DollarWise_Backup_'+dateStr+'.json';jA.click();
     setTimeout(()=>URL.revokeObjectURL(jUrl),1000);
     setTimeout(()=>{
@@ -1360,14 +1326,14 @@ function exportAll(){
         const wb=XLSX.utils.book_new();
         // Sheet 1
         const r1=[[null],[null,'DOLLARWISE — ALL TRANSACTIONS'],[null,'Date','Merchant','Amount','Category','Purpose','Paid By','Source','CC Bank','Notes']];
-        txns.slice().sort((a,b)=>b.date.localeCompare(a.date)).forEach(t=>r1.push([null,t.date,t.merchant||'',t.amount||0,catLabel(t.category),t.purpose,t.paidBy,t.source,t.ccBank||'',t.notes||'']));
+        txns.slice().sort((a,b)=>b.date.localeCompare(a.date)).forEach(t=>r1.push([null,t.date,t.merchant||'',t.amount||0,catLabel(t.category),purposeLabel(t.purpose),paidByLabel(t.paidBy),t.source,t.ccBank||'',t.notes||'']));
         const ws1=XLSX.utils.aoa_to_sheet(r1);ws1['!cols']=[{wch:3},{wch:12},{wch:30},{wch:10},{wch:20},{wch:12},{wch:10},{wch:8},{wch:8},{wch:25}];
         XLSX.utils.book_append_sheet(wb,ws1,'All Transactions');
         // Sheet 2
         const months=[...new Set(txns.map(t=>t.date.slice(0,7)))].sort().reverse();
-        const r2=[[null],[null,'DOLLARWISE — MONTHLY SUMMARY'],[null,'Month','Total','Home','Personal','Wife Only','No Split','Cash','CC','Count']];
-        months.forEach(m=>{const mt=txns.filter(t=>t.date.startsWith(m));r2.push([null,m,mt.reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='home').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='personal').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='wifeonly').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='nosplit').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0),mt.length]);});
-        const ws2=XLSX.utils.aoa_to_sheet(r2);ws2['!cols']=[{wch:3},{wch:10},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:10},{wch:10},{wch:8}];
+        const r2=[[null],[null,'DOLLARWISE — MONTHLY SUMMARY'],[null,'Month','Total',purposeLabel('split'),'Wife 100%','Me 100%','Cash','CC','Count']];
+        months.forEach(m=>{const mt=txns.filter(t=>t.date.startsWith(m));r2.push([null,m,mt.reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='split').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='wife100').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.purpose==='me100').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.source==='cash').reduce((s,t)=>s+t.amount,0),mt.filter(t=>t.source==='cc').reduce((s,t)=>s+t.amount,0),mt.length]);});
+        const ws2=XLSX.utils.aoa_to_sheet(r2);ws2['!cols']=[{wch:3},{wch:10},{wch:12},{wch:12},{wch:12},{wch:12},{wch:10},{wch:10},{wch:8}];
         XLSX.utils.book_append_sheet(wb,ws2,'Monthly Summary');
         // Sheet 3
         const r3=[[null],[null,'DOLLARWISE — CATEGORY BREAKDOWN'],[null,'Month',...Object.values(CAT_META).map(c=>c.label)]];
@@ -1384,6 +1350,9 @@ function exportAll(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
+  migrateV130();
+  try{ localStorage.removeItem('dw_gemini_key'); }catch{}
+  const qs=document.querySelector('#qa-purpose [data-val="split"]'); if(qs) qs.lastChild.textContent=splitText(loadSettings());
   document.getElementById('qa-date').value=todayStr();
   document.getElementById('qa-date').max=todayStr();
   document.getElementById('cc-month').value=todayStr().slice(0,7);
