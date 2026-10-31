@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DollarWise">
-<title>DollarWise v1.3.7</title>
+<title>DollarWise v1.3.8</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1117'/><circle cx='50' cy='50' r='36' fill='%23F59E0B' opacity='0.2'/><circle cx='50' cy='50' r='30' fill='%23F59E0B' opacity='0.4'/><circle cx='50' cy='50' r='24' fill='%23F59E0B'/><text y='56' x='50' text-anchor='middle' font-size='22' font-family='Arial Black,sans-serif' font-weight='900' fill='%230D1117'>$</text></svg>">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -257,7 +257,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div id="app">
   <div class="header">
     <div class="header-row">
-      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.7 · Hubby & Wife</div></div>
+      <div><h1>💰 DOLLARWISE</h1><div class="sub">v1.3.8 · Hubby & Wife</div></div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="header-date"></div>
         <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
@@ -369,13 +369,14 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
   <div class="screen" id="screen-spending">
     <input type="text" class="search-input" placeholder="🔍 Search merchant…" id="sp-search" oninput="renderSpending()">
     <div class="month-chips" id="sp-months"></div>
-    <div class="filter-row">
-      <div class="filter-chip active" data-val="all"       onclick="setSpFilter(this)">All</div>
-      <div class="filter-chip"        data-val="split"     onclick="setSpFilter(this)">⚖️ 50/50</div>
-      <div class="filter-chip"        data-val="wife100"   onclick="setSpFilter(this)">👩 100%</div>
-      <div class="filter-chip"        data-val="me100"     onclick="setSpFilter(this)">🧔 100%</div>
-      <div class="filter-chip"        data-val="cash"      onclick="setSpFilter(this)">💵 Cash</div>
-      <div class="filter-chip"        data-val="cc"        onclick="setSpFilter(this)">💳 CC</div>
+    <div class="filter-row" id="sp-src-row" style="margin-bottom:4px">
+      <div class="filter-chip" data-val="cash" onclick="setSpFilter(this)">💵 Cash</div>
+      <div class="filter-chip" data-val="cc"   onclick="setSpFilter(this)">💳 CC</div>
+    </div>
+    <div class="filter-row" id="sp-purp-row">
+      <div class="filter-chip" data-val="split"   onclick="setSpFilter(this)">⚖️ 50/50</div>
+      <div class="filter-chip" data-val="wife100" onclick="setSpFilter(this)">👩 100%</div>
+      <div class="filter-chip" data-val="me100"   onclick="setSpFilter(this)">🧔 100%</div>
     </div>
     <div id="sp-total-row"></div>
     <div id="sp-select-hint" style="display:none;align-items:center;justify-content:space-between;gap:8px;text-align:left" class="select-mode-hint">
@@ -548,7 +549,7 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
     </div>
     <div class="card">
       <div class="card-title">ℹ️ APP INFO</div>
-      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.7</span></div>
+      <div class="info-row"><span class="info-label">Version</span><span class="info-val">v1.3.8</span></div>
       <div class="info-row"><span class="info-label">Total Transactions</span><span class="info-val" id="info-count">0</span></div>
       <div class="info-row"><span class="info-label">Storage Used</span><span class="info-val" id="info-storage">—</span></div>
     </div>
@@ -596,9 +597,6 @@ body { height:100%; height:-webkit-fill-available; overflow:hidden; background:v
 <div class="modal-overlay" id="wa-modal" onclick="closeWAModal(event)">
   <div class="modal-box">
     <div class="modal-title">📱 WHATSAPP SPLIT SUMMARY</div>
-    <label class="form-label" style="margin-bottom:6px;display:block">Personal note (optional)</label>
-    <textarea class="wa-note-input" id="wa-note" placeholder="e.g. Hey babe, here's this month's breakdown 😊"></textarea>
-    <button class="btn btn-primary" style="margin-bottom:10px" onclick="generateAndShowWA()">✨ Generate Summary</button>
     <div class="whatsapp-box" id="wa-text" style="display:none"></div>
     <button class="btn btn-secondary" id="wa-copy-btn" style="display:none;margin-bottom:8px" onclick="copyWA()">📋 Copy to Clipboard</button>
     <button class="btn btn-secondary" onclick="closeWAModal()">Close</button>
@@ -625,6 +623,8 @@ function toggleTheme() {
 })();
 
 // ── CHANGELOG ─────────────────────────────────────────────────────────────────
+// v1.3.8  Spending: two-row multi-select filters (Cash/CC, Purpose) with Wife owes total;
+//         simplified WhatsApp message (Cash, Credit Card, Wife to pay, Major Items).
 // v1.3.7  Add tab merchant suggestions; CC scan learns category and Purpose from past entries (🧠 learned);
 //         statement month read from Statement Date and confirmed in a pop-up (Statement Month box removed);
 //         review header with month and self-check against the bill SUB-TOTAL; refunds kept as negatives;
@@ -1261,7 +1261,8 @@ function renderDashboard(){
 }
 
 // ── SPENDING ──────────────────────────────────────────────────────────────────
-let spMonth=todayStr().slice(0,7), spFilter='all';
+let spMonth=todayStr().slice(0,7);
+const spSrc=new Set(), spPurp=new Set(); // empty = no filter on that row
 let selectMode=false, selectedIds=new Set(), currentSpTxns=[];
 
 function renderSpMonths(){
@@ -1273,7 +1274,12 @@ function renderSpMonths(){
   }).join('');
 }
 function setSpMonth(m){spMonth=m;exitSelectMode();renderSpending();}
-function setSpFilter(chip){document.querySelectorAll('#screen-spending .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');spFilter=chip.dataset.val;exitSelectMode();renderSpending();}
+function setSpFilter(chip){
+  const v=chip.dataset.val, set=PURPOSES.includes(v)?spPurp:spSrc;
+  if(set.has(v)) set.delete(v); else set.add(v);
+  chip.classList.toggle('active',set.has(v));
+  exitSelectMode(); renderSpending();
+}
 
 function purposeBadge(p){
   if(p==='split')   return`<span class="badge badge-split">⚖️ ${splitText(loadSettings())}</span>`;
@@ -1337,14 +1343,17 @@ function renderSpending(){
   renderSpMonths();
   const search=(document.getElementById('sp-search').value||'').toLowerCase();
   let txns=loadTxns().filter(t=>billMonth(t)===spMonth);
-  if(PURPOSES.includes(spFilter)) txns=txns.filter(t=>t.purpose===spFilter);
-  else if(spFilter==='cash') txns=txns.filter(t=>t.source==='cash');
-  else if(spFilter==='cc')   txns=txns.filter(t=>t.source==='cc');
+  if(spSrc.size)  txns=txns.filter(t=>spSrc.has(t.source));
+  if(spPurp.size) txns=txns.filter(t=>spPurp.has(t.purpose));
   if(search) txns=txns.filter(t=>(t.merchant||'').toLowerCase().includes(search));
   txns=txns.sort((a,b)=>b.date.localeCompare(a.date));
   currentSpTxns=txns;
   const grand=txns.reduce((s,t)=>s+t.amount,0);
-  document.getElementById('sp-total-row').innerHTML=txns.length?`<div class="spending-total-row"><span class="spending-total-label">Total (${txns.length}) · Hold 1s to edit</span><span class="spending-total-val">${fmt(grand)}</span></div>`+(selectMode?'':`<div style="display:flex;justify-content:flex-end;margin:-4px 0 10px"><button class="btn btn-secondary btn-sm" onclick="startSelectAll()">☑️ Select All</button></div>`):'';
+  const owes=calcSplit(txns,loadSettings()).finalBalance, owesMe=owes>-0.005;
+  document.getElementById('sp-total-row').innerHTML=txns.length?`<div class="spending-total-row" style="align-items:flex-end">
+      <div><div class="spending-total-label">Total spent (${txns.length})</div><div class="spending-total-val" style="margin-top:2px">${fmt(grand)}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">Hold 1s to edit</div></div>
+      <div style="text-align:right"><div class="spending-total-label">${owesMe?'👩 Wife owes you':'🧔 You owe wife'}</div><div class="spending-total-val" style="margin-top:2px;color:${owesMe?'var(--accent)':'var(--danger)'}">${owesMe?fmtPos(owes):fmtNeg(owes)}</div></div>
+    </div>`+(selectMode?'':`<div style="display:flex;justify-content:flex-end;margin:-4px 0 10px"><button class="btn btn-secondary btn-sm" onclick="startSelectAll()">☑️ Select All</button></div>`):'';
   if(selectMode) updateDeleteBtn();
   renderSpendingRows();
 }
@@ -1519,9 +1528,7 @@ function clearAllData(){
 
 // ── WHATSAPP ──────────────────────────────────────────────────────────────────
 function openWAModal(){
-  document.getElementById('wa-note').value='';
-  document.getElementById('wa-text').style.display='none';
-  document.getElementById('wa-copy-btn').style.display='none';
+  generateAndShowWA();
   document.getElementById('wa-modal').classList.add('open');
 }
 function closeWAModal(e){if(!e||e.target===document.getElementById('wa-modal'))document.getElementById('wa-modal').classList.remove('open');}
@@ -1530,18 +1537,9 @@ function generateAndShowWA(){
   const yr=dashDate.getFullYear(),mo=dashDate.getMonth();
   const ms=yr+'-'+String(mo+1).padStart(2,'0');
   const txns=loadTxns().filter(t=>billMonth(t)===ms);
-  const myName=settings.myName||'Hubby', wifeName=settings.wifeName||'Wife';
-  const split=calcSplit(txns,settings), L=split.lines, st=splitText(settings);
-  const note=document.getElementById('wa-note').value.trim();
-  const line=(label,l,neg)=>`  ${label} · ${neg?wifeName:myName} paid $${fmtN(l.paid)} → ${neg?fmtNeg(l.val):fmtPos(l.val)}`;
-  const fb=split.finalBalance;
-  const settle=fb>-0.005?`👩 *${wifeName} owes ${myName}: ${fmtPos(fb)}*`:`🧔 *${myName} owes ${wifeName}: ${fmtNeg(fb)}*`;
-  const bar='━━━━━━━━━━━━━━━━━━━━━━';
-  const text=(note?`💬 ${note}\n${bar}\n`:'')+
-    `📊 *DOLLARWISE — ${ML[mo].toUpperCase()} ${yr}*\n${bar}\n`+
-    [line('⚖️ '+st,L.meSplit,false),line('👩 100%',L.meWife100,false),line('🧔 100%',L.meMe100,false),
-     line('⚖️ '+st,L.wifeSplit,true),line('🧔 100%',L.wifeMe100,true)].join('\n')+
-    `\n${bar}\n${settle}\n${bar}\n_Generated by DollarWise v1.3.7_`;
+  const owe=src=>Math.round(calcSplit(txns.filter(t=>t.source===src),settings).finalBalance*100)/100;
+  const cash=owe('cash'), cc=owe('cc'), total=Math.round((cash+cc)*100)/100;
+  const text=`Expenses - ${ML[mo]} ${yr}\n\nCash: ${fmt(cash)}\nCredit Card: ${fmt(cc)}\n\nWife to pay: ${fmt(total)}\n\nMajor Items:\n`;
   document.getElementById('wa-text').textContent=text;
   document.getElementById('wa-text').style.display='block';
   document.getElementById('wa-copy-btn').style.display='block';
@@ -1567,7 +1565,7 @@ function exportAll(){
   if(btn){btn.textContent='Preparing…';btn.disabled=true;}
   try{
     const txns=loadTxns(),settings=loadSettings();
-    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.7',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
+    const jUrl=URL.createObjectURL(new Blob([JSON.stringify({version:'1.3.8',exported:new Date().toISOString(),transactions:txns,settings},null,2)],{type:'application/json'}));
     const jA=document.createElement('a');jA.href=jUrl;jA.download='DollarWise_Backup_'+dateStr+'.json';jA.click();
     setTimeout(()=>URL.revokeObjectURL(jUrl),1000);
     setTimeout(()=>{
